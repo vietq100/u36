@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/shared/forms/FormInput";
 import { useCreateOrUpdateUnit } from "../hooks/useProperties";
@@ -102,26 +103,30 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
               required
             />
 
-            {/* Project Select Dropdown */}
             <FormField
               control={form.control as any}
               name="projectId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Dự án</FormLabel>
-                  <FormControl>
-                    <select
-                      className="flex h-10 w-full rounded-md border border-input bg-card px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
-                      {...field}
-                    >
-                      <option value={0} disabled>-- Chọn dự án --</option>
+                  <Select
+                    onValueChange={(val) => field.onChange(Number(val))}
+                    value={String(field.value || 0)}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
+                        <SelectValue placeholder="Chọn dự án" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="0" disabled>-- Chọn dự án --</SelectItem>
                       {projects.map((p) => (
-                        <option key={p.id} value={p.id}>
+                        <SelectItem key={p.id} value={String(p.id)}>
                           {p.projectName} ({p.projectCode})
-                        </option>
+                        </SelectItem>
                       ))}
-                    </select>
-                  </FormControl>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -155,25 +160,29 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
                 required
               />
 
-              {/* Status Select Dropdown */}
               <FormField
                 control={form.control as any}
                 name="statusId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Trạng thái</FormLabel>
-                    <FormControl>
-                      <select
-                        className="flex h-10 w-full rounded-md border border-input bg-card px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
-                        {...field}
-                      >
+                    <Select
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      value={String(field.value || 1)}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
+                          <SelectValue placeholder="Chọn trạng thái" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
                         {statuses.map((s) => (
-                          <option key={s.id} value={s.id}>
+                          <SelectItem key={s.id} value={String(s.id)}>
                             {s.name}
-                          </option>
+                          </SelectItem>
                         ))}
-                      </select>
-                    </FormControl>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

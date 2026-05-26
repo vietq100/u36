@@ -4,6 +4,7 @@ import { Edit, Power, Search } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DataTable } from "@/components/shared/DataTable";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { useGetUnits, useToggleUnitActive } from "../hooks/useProperties";
@@ -197,38 +198,46 @@ export function UnitList() {
           </form>
 
           {/* Project dropdown Filter */}
-          <select
-            className="flex h-10 rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring text-foreground w-full sm:w-[180px]"
-            value={selectedProjectId}
-            onChange={(e) => {
-              setSelectedProjectId(Number(e.target.value));
+          <Select
+            value={String(selectedProjectId)}
+            onValueChange={(val) => {
+              setSelectedProjectId(Number(val));
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             }}
           >
-            <option value={0}>Tất cả dự án</option>
-            {projects.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.projectName}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full sm:w-[180px] h-10 bg-card text-foreground border-input">
+              <SelectValue placeholder="Tất cả dự án" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0">Tất cả dự án</SelectItem>
+              {projects.map((p) => (
+                <SelectItem key={p.id} value={String(p.id)}>
+                  {p.projectName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           {/* Status dropdown Filter */}
-          <select
-            className="flex h-10 rounded-md border border-input bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring text-foreground w-full sm:w-[160px]"
-            value={selectedStatusId}
-            onChange={(e) => {
-              setSelectedStatusId(Number(e.target.value));
+          <Select
+            value={String(selectedStatusId)}
+            onValueChange={(val) => {
+              setSelectedStatusId(Number(val));
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             }}
           >
-            <option value={0}>Tất cả trạng thái</option>
-            {statuses.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full sm:w-[160px] h-10 bg-card text-foreground border-input">
+              <SelectValue placeholder="Tất cả trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0">Tất cả trạng thái</SelectItem>
+              {statuses.map((s) => (
+                <SelectItem key={s.id} value={String(s.id)}>
+                  {s.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
           {/* Reset Filters button */}
           {(keyword || selectedProjectId !== 0 || selectedStatusId !== 0) && (

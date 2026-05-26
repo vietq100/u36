@@ -42,9 +42,9 @@ Cấu hình màu sắc của shadcn/ui sử dụng HSL variables. Mở file `src
 ```
 
 ## 2. Typography (Fonts)
-Nên sử dụng font chữ hiện đại (như Inter, Roboto, hoặc font đặc thù của PMH).
-- Install font qua Google Fonts trong `index.html`.
-- Cấu hình trong `tailwind.config.js`:
+- Sử dụng font chữ hiện đại **Inter** để mang lại cảm giác corporate, tối giản và sang trọng.
+- Install font qua Google Fonts trong `index.css` (VD: `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');`).
+- Cấu hình trong `tailwind.config.js` (hoặc áp dụng trực tiếp `font-['Inter',sans-serif]`):
 
 ```javascript
 import { fontFamily } from "tailwindcss/defaultTheme"

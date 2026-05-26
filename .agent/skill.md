@@ -29,6 +29,11 @@ Tuân thủ **Feature-Based Architecture**:
 - Tránh viết style inline (ví dụ: `style={{ color: 'red' }}`). Luôn dùng className của Tailwind.
 - Khi cần gộp class, sử dụng hàm tiện ích `cn()` (được cấu hình sẵn bởi shadcn/ui từ `clsx` và `tailwind-merge`).
 - Ưu tiên sử dụng các Design Tokens trong file `tailwind.config.js` thay vì dùng mã màu cứng (hardcode hex color).
+- **Glassmorphism & Premium Aesthetic (Bắt buộc)**: Toàn bộ dự án phải duy trì giao diện tối giản, hiện đại và sang trọng:
+  - **Containers/Cards**: Áp dụng hiệu ứng kính mờ (Frosted glass) với các class như `bg-white/10`, `backdrop-blur-xl`, viền mỏng `border-white/20`, bo góc lớn `rounded-2xl` hoặc `rounded-[24px]` và shadow sâu.
+  - **Typography**: Cấm dùng font mặc định của trình duyệt. Luôn dùng font **Inter** cho mọi văn bản để tăng tính corporate. Sử dụng high-contrast (chữ trắng/sáng trên nền tối).
+  - **Backgrounds**: Sử dụng ảnh nền phong cảnh chất lượng cao tông màu xanh đậm (teal/deep blue) kèm overlay tối mờ (`bg-[#022129]/40`), hoặc sử dụng các mảng màu gradient blur (blobs) mượt mà.
+  - **Inputs & Controls**: Ô nhập liệu phải bo góc `rounded-xl`, nền trong suốt mờ, kèm line icons tinh tế (Lucide React với `strokeWidth={2}`). Nút bấm chính (CTA) dùng nền trắng nguyên khối chữ đen để tạo điểm nhấn mạnh mẽ.
 
 ## 5. Xử lý Form và Validation
 - Mọi form phải được wrap bằng component `<Form>` của `shadcn/ui`.

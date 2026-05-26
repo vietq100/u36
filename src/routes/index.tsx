@@ -7,6 +7,10 @@ import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 // Lazy load pages for performance
 const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));
 const PropertiesPage = lazy(() => import("@/features/properties/pages/PropertiesPage"));
+const ClientsPage = lazy(() => import("@/features/clients/pages/ClientsPage"));
+const DashboardPage = lazy(() => import("@/features/dashboard/pages/DashboardPage"));
+const ContractsPage = lazy(() => import("@/features/contracts/pages/ContractsPage"));
+const InquiriesPage = lazy(() => import("@/features/inquiries/pages/InquiriesPage"));
 
 // Suspense wrapper helper
 const withSuspense = (Component: React.ComponentType) => (
@@ -29,31 +33,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between pb-4 mb-4 border-b">
-                  <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Hệ thống Phú Mỹ Hưng</h1>
-                    <p className="text-muted-foreground">Chào mừng bạn trở lại hệ thống quản lý leasing</p>
-                  </div>
-                </div>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                  {/* Summary cards placeholders */}
-                  {[
-                    { label: "Tổng số BĐS", value: "245 căn", desc: "+12 căn tháng này" },
-                    { label: "Hợp đồng hiệu lực", value: "189 bản", desc: "+4 bản mới" },
-                    { label: "Khách hàng thuê", value: "154 đối tác", desc: "Tỉ lệ lấp đầy 92%" },
-                    { label: "Yêu cầu xử lý", value: "8 yêu cầu", desc: "3 yêu cầu khẩn cấp" }
-                  ].map((card, i) => (
-                    <div key={i} className="rounded-xl border bg-card p-6 shadow-sm">
-                      <p className="text-sm font-medium text-muted-foreground">{card.label}</p>
-                      <h3 className="text-2xl font-bold mt-2">{card.value}</h3>
-                      <p className="text-xs text-muted-foreground mt-1">{card.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ),
+            element: withSuspense(DashboardPage),
           },
           {
             path: "properties",
@@ -61,30 +41,15 @@ export const router = createBrowserRouter([
           },
           {
             path: "clients",
-            element: (
-              <div className="rounded-xl border border-dashed p-8 text-center bg-card">
-                <h3 className="text-lg font-medium">Khách hàng</h3>
-                <p className="text-muted-foreground mt-1">Chức năng quản lý khách hàng đang phát triển.</p>
-              </div>
-            ),
+            element: withSuspense(ClientsPage),
           },
           {
             path: "contracts",
-            element: (
-              <div className="rounded-xl border border-dashed p-8 text-center bg-card">
-                <h3 className="text-lg font-medium">Hợp đồng</h3>
-                <p className="text-muted-foreground mt-1">Chức năng quản lý hợp đồng thuê đang phát triển.</p>
-              </div>
-            ),
+            element: withSuspense(ContractsPage),
           },
           {
             path: "inquiries",
-            element: (
-              <div className="rounded-xl border border-dashed p-8 text-center bg-card">
-                <h3 className="text-lg font-medium">Yêu cầu hỗ trợ</h3>
-                <p className="text-muted-foreground mt-1">Chức năng tiếp nhận và xử lý yêu cầu đang phát triển.</p>
-              </div>
-            ),
+            element: withSuspense(InquiriesPage),
           },
           {
             path: "unauthorized",

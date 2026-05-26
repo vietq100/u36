@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4 relative">
-      <div className="rounded-md border bg-card relative min-h-[300px]">
+      <div className="rounded-xl border border-border/40 bg-card/75 backdrop-blur-md relative min-h-[300px] overflow-hidden shadow-md">
         {isLoading && <LoadingOverlay />}
         
         <Table>
@@ -88,6 +88,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="transition-colors hover:bg-muted/40 group cursor-default"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
