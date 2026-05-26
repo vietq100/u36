@@ -12,7 +12,7 @@ import type { InputHTMLAttributes } from "react";
 
 interface FormInputProps<T extends FieldValues>
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "name"> {
-  control: Control<T>;
+  control: Control<T, any, any>;
   name: Path<T>;
   label: string;
   description?: string;
@@ -27,8 +27,8 @@ export function FormInput<T extends FieldValues>({
 }: FormInputProps<T>) {
   return (
     <FormField
-      control={control}
-      name={name}
+      control={control as any}
+      name={name as any}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>

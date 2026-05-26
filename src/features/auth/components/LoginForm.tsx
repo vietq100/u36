@@ -1,12 +1,14 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useNavigate } from "react-router-dom";
+import { usePostApiTokenAuthAuthenticate } from "@/api/generated/token-auth/token-auth";
 
 const loginSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
@@ -24,10 +26,51 @@ export function LoginForm() {
     defaultValues: { email: "", password: "" },
   });
 
+  const authMutation = usePostApiTokenAuthAuthenticate();
+
+  // Handle real API submit
   const onSubmit = (values: LoginValues) => {
-    // Fake login
-    console.log("Login with", values);
-    setAuth({ id: "1", email: values.email, roles: ["ADMIN"] }, "fake-jwt-token");
+    authMutation.mutate(
+      {
+        data: {
+          userNameOrEmailAddress: values.email,
+          password: values.password,
+          rememberClient: true,
+        },
+      },
+      {
+        onSuccess: (response) => {
+          const result = (response as any).data || response;
+          if (result.accessToken) {
+            toast.success("Đăng nhập thành công!");
+            setAuth(
+              { 
+                id: String(result.userId || "1"), 
+                email: values.email, 
+                roles: ["ADMIN"] 
+              }, 
+              result.accessToken
+            );
+            navigate("/");
+          } else {
+            toast.error("Không nhận được token từ hệ thống.");
+          }
+        },
+        onError: (err: any) => {
+          console.error("Login error:", err);
+          toast.error(err.response?.data?.error?.message || "Đăng nhập thất bại. Vui lòng thử lại.");
+        },
+      }
+    );
+  };
+
+  // Demo fallback login
+  const handleDemoLogin = () => {
+    toast.success("Đăng nhập thử nghiệm thành công!");
+    setAuth(
+      { id: "demo-id", email: "admin@example.com", roles: ["ADMIN"] }, 
+      "fake-jwt-token"
+    );
     navigate("/");
   };
 
@@ -46,6 +89,7 @@ export function LoginForm() {
               label="Email"
               placeholder="admin@example.com"
               type="email"
+              disabled={authMutation.isPending}
             />
             <FormInput
               control={form.control}
@@ -53,8 +97,23 @@ export function LoginForm() {
               label="Mật khẩu"
               placeholder="********"
               type="password"
+              disabled={authMutation.isPending}
             />
-            <Button type="submit" className="w-full">Đăng nhập</Button>
+            
+            <div className="flex flex-col gap-2 pt-2">
+              <Button type="submit" className="w-full" disabled={authMutation.isPending}>
+                {authMutation.isPending ? "Đang xác thực..." : "Đăng nhập hệ thống"}
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full border-dashed"
+                onClick={handleDemoLogin}
+                disabled={authMutation.isPending}
+              >
+                Chạy bản Demo (Offline)
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

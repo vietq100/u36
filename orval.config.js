@@ -1,7 +1,7 @@
 export default {
   pmhApi: {
     input: {
-      target: './swagger.json', // Đường dẫn file swagger (có thể là url)
+      target: './swagger-cleaned.json', // Đường dẫn file swagger (đã được làm sạch)
     },
     output: {
       mode: 'tags-split', // Chia nhỏ file sinh ra theo tag của API

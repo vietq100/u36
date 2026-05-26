@@ -1,0 +1,208 @@
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { FormInput } from "@/components/shared/forms/FormInput";
+import { useCreateOrUpdateUnit } from "../hooks/useProperties";
+import { usePropertiesStore } from "../stores/usePropertiesStore";
+import { unitSchema } from "../types";
+import type { Unit, UnitFormValues } from "../types";
+
+interface UnitFormProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  unit?: Unit | null;
+  onSuccess?: () => void;
+}
+
+export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps) {
+  const projects = usePropertiesStore((state) => state.projects).filter(p => p.isActive);
+  const statuses = usePropertiesStore((state) => state.statuses);
+
+  const form = useForm<UnitFormValues>({
+    resolver: zodResolver(unitSchema) as any,
+    defaultValues: {
+      unitName: "",
+      projectId: 0,
+      floorName: "",
+      actualSize: 0,
+      price: 0,
+      statusId: 1,
+      description: "",
+    },
+  });
+
+  // Reset form values when unit changes
+  useEffect(() => {
+    if (unit) {
+      form.reset({
+        unitName: unit.unitName,
+        projectId: unit.projectId,
+        floorName: unit.floorName,
+        actualSize: unit.actualSize,
+        price: unit.price,
+        statusId: unit.statusId,
+        description: unit.description || "",
+      });
+    } else {
+      form.reset({
+        unitName: "",
+        projectId: projects[0]?.id || 0,
+        floorName: "",
+        actualSize: 0,
+        price: 0,
+        statusId: 1,
+        description: "",
+      });
+    }
+  }, [unit, open, form, projects]);
+
+  const mutation = useCreateOrUpdateUnit({
+    onSuccess: () => {
+      toast.success(unit ? "Cập nhật căn hộ thành công" : "Thêm mới căn hộ thành công");
+      onSuccess?.();
+      onOpenChange(false);
+    },
+  });
+
+  const onSubmit = (values: UnitFormValues) => {
+    mutation.mutate({
+      id: unit?.id,
+      data: values,
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>{unit ? "Chỉnh sửa căn hộ / mặt bằng" : "Thêm mới căn hộ / mặt bằng"}</DialogTitle>
+          <DialogDescription>
+            Nhập thông tin chi tiết căn hộ hoặc mặt bằng thương mại cho thuê. Bấm Lưu khi hoàn tất.
+          </DialogDescription>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
+            <FormInput
+              control={form.control}
+              name="unitName"
+              label="Mã căn hộ/mặt bằng"
+              placeholder="Ví dụ: SV1-02-03"
+              required
+            />
+
+            {/* Project Select Dropdown */}
+            <FormField
+              control={form.control as any}
+              name="projectId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dự án</FormLabel>
+                  <FormControl>
+                    <select
+                      className="flex h-10 w-full rounded-md border border-input bg-card px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
+                      {...field}
+                    >
+                      <option value={0} disabled>-- Chọn dự án --</option>
+                      {projects.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.projectName} ({p.projectCode})
+                        </option>
+                      ))}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormInput
+                control={form.control}
+                name="floorName"
+                label="Tầng/Lầu"
+                placeholder="Ví dụ: Tầng 5"
+                required
+              />
+              <FormInput
+                control={form.control}
+                name="actualSize"
+                label="Diện tích (m²)"
+                type="number"
+                placeholder="Ví dụ: 85"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormInput
+                control={form.control}
+                name="price"
+                label="Giá thuê (USD/tháng)"
+                type="number"
+                placeholder="Ví dụ: 1200"
+                required
+              />
+
+              {/* Status Select Dropdown */}
+              <FormField
+                control={form.control as any}
+                name="statusId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Trạng thái</FormLabel>
+                    <FormControl>
+                      <select
+                        className="flex h-10 w-full rounded-md border border-input bg-card px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-foreground"
+                        {...field}
+                      >
+                        {statuses.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                          </option>
+                        ))}
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormInput
+              control={form.control}
+              name="description"
+              label="Mô tả căn hộ"
+              placeholder="Ví dụ: Đầy đủ nội thất, view đẹp..."
+            />
+
+            <DialogFooter className="pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => onOpenChange(false)}
+                disabled={mutation.isPending}
+              >
+                Hủy
+              </Button>
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? "Đang lưu..." : "Lưu thay đổi"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
