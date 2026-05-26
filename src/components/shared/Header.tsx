@@ -71,7 +71,7 @@ export function Header() {
   };
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-border/40 bg-card/85 backdrop-blur-md px-4 md:px-6 sticky top-0 z-30">
+    <header className="flex h-14 items-center justify-between border-b border-border/50 bg-card/45 dark:bg-white/3 backdrop-blur-lg px-4 md:px-6 sticky top-0 z-30">
       {/* Left section: Sidebar toggle & Global Search Mock */}
       <div className="flex items-center gap-4 flex-1">
         <Button 
@@ -79,7 +79,7 @@ export function Header() {
           size="icon" 
           onClick={toggleSidebar}
           aria-label="Toggle Sidebar"
-          className="hover:bg-accent/10 hover:text-accent transition-all duration-200 shrink-0"
+          className="hover:bg-muted/50 dark:hover:bg-white/5 hover:text-accent transition-all duration-200 shrink-0"
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -90,7 +90,7 @@ export function Header() {
           <input
             type="text"
             placeholder="Tìm kiếm dự án, khách hàng... ⌘K"
-            className="h-8 w-full rounded-lg border border-input bg-muted/20 pl-9 pr-4 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:bg-card transition-all"
+            className="h-8 w-full rounded-xl border border-border/60 bg-muted/20 dark:bg-white/5 pl-9 pr-4 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:bg-card/85 transition-all duration-300"
           />
         </form>
       </div>
@@ -111,7 +111,7 @@ export function Header() {
               <ChevronDown className="h-3 w-3 opacity-60" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52 border-border/50 bg-card/95 backdrop-blur-md">
+          <DropdownMenuContent align="end" className="w-52 border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl shadow-2xl rounded-xl">
             <DropdownMenuLabel>Tạo mới dữ liệu</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
@@ -149,7 +149,7 @@ export function Header() {
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive animate-pulse" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80 border-border/50 bg-card/95 backdrop-blur-md">
+          <DropdownMenuContent align="end" className="w-80 border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl shadow-2xl rounded-xl">
             <DropdownMenuLabel className="flex justify-between items-center">
               <span>Thông báo gần đây</span>
               <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full">3 tin mới</span>
@@ -201,7 +201,7 @@ export function Header() {
                 <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden md:block shrink-0 pr-0.5" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 border-border/50 bg-card/95 backdrop-blur-md">
+            <DropdownMenuContent align="end" className="w-56 border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl shadow-2xl rounded-xl">
               <DropdownMenuLabel className="font-normal flex flex-col gap-0.5 p-3">
                 <div className="flex items-center gap-1">
                   <Sparkles className="h-3.5 w-3.5 text-accent animate-pulse" />
@@ -232,7 +232,7 @@ export function Header() {
                   {getThemeIcon()}
                   <span className="ml-2">Giao diện ({getThemeLabel()})</span>
                 </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="border-border/50 bg-card/95 backdrop-blur-md">
+                <DropdownMenuSubContent className="border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl shadow-2xl rounded-xl">
                   <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer flex justify-between items-center">
                     <div className="flex items-center">
                       <Sun className="h-4 w-4 mr-2 text-amber-500" />

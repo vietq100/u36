@@ -24,7 +24,7 @@ export function LoginForm() {
   const navigate = useNavigate();
 
   const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchema) as any,
     defaultValues: { email: "", password: "", rememberMe: false },
   });
 
@@ -71,7 +71,7 @@ export function LoginForm() {
       </div>
       
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-5">
           <FormField
             control={form.control}
             name="email"

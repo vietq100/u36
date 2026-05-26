@@ -18,9 +18,16 @@ customInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Thêm response interceptor để xử lý lỗi chung (VD: 401)
+// Thêm response interceptor để xử lý lỗi chung (VD: 401) và tự động giải nén (unwrap) kết quả ABP nếu có
 customInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data && typeof response.data === 'object') {
+      if ('result' in response.data && 'success' in response.data) {
+        response.data = response.data.result;
+      }
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       // Xử lý logout, clear token...

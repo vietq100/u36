@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -29,7 +29,8 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactFormProps) {
-  const companies = useClientsStore((state) => state.companies).filter(c => c.isActive);
+  const rawCompanies = useClientsStore((state) => state.companies);
+  const companies = useMemo(() => rawCompanies.filter(c => c.isActive), [rawCompanies]);
   const nationalities = useClientsStore((state) => state.nationalities);
   const leadSources = useClientsStore((state) => state.leadSources);
   const levels = useClientsStore((state) => state.levels);

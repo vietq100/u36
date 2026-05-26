@@ -35,12 +35,12 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border/40 bg-card/85 backdrop-blur-md transition-transform duration-300 md:static md:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border/50 bg-card/45 dark:bg-white/3 backdrop-blur-lg transition-transform duration-300 md:static md:translate-x-0",
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Brand logo & mobile close button */}
-        <div className="flex h-14 items-center justify-between px-6 border-b border-border/40">
+        <div className="flex h-14 items-center justify-between px-6 border-b border-border/50">
           <div className="flex items-center gap-2.5 font-bold">
             <Building2 className="h-5 w-5 text-accent animate-pulse" />
             <span className="text-base tracking-wide bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
@@ -50,7 +50,7 @@ export function Sidebar() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden hover:bg-accent/10 hover:text-accent"
+            className="md:hidden hover:bg-muted/50 dark:hover:bg-white/5 hover:text-accent"
             onClick={() => setSidebarOpen(false)}
           >
             <X className="h-5 w-5" />
@@ -74,10 +74,10 @@ export function Sidebar() {
                 }}
                 className={({ isActive }) =>
                   cn(
-                    "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200",
+                    "group relative flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-300",
                     isActive
-                      ? "bg-primary/10 text-primary font-semibold shadow-sm shadow-primary/5 pl-4"
-                      : "text-muted-foreground hover:bg-accent/10 hover:text-foreground hover:translate-x-1 pl-3"
+                      ? "bg-primary/10 dark:bg-white/8 text-foreground font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.1)] pl-4"
+                      : "text-muted-foreground hover:bg-muted/50 dark:hover:bg-white/5 hover:text-foreground hover:translate-x-1 pl-3"
                   )
                 }
               >
@@ -89,7 +89,7 @@ export function Sidebar() {
                     )}
                     <Icon className={cn(
                       "h-4 w-4 shrink-0 transition-colors",
-                      isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                      isActive ? "text-accent" : "text-muted-foreground group-hover:text-foreground"
                     )} />
                     <span>{item.label}</span>
                   </>

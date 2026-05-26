@@ -29,11 +29,11 @@ Tuân thủ **Feature-Based Architecture**:
 - Tránh viết style inline (ví dụ: `style={{ color: 'red' }}`). Luôn dùng className của Tailwind.
 - Khi cần gộp class, sử dụng hàm tiện ích `cn()` (được cấu hình sẵn bởi shadcn/ui từ `clsx` và `tailwind-merge`).
 - Ưu tiên sử dụng các Design Tokens trong file `tailwind.config.js` thay vì dùng mã màu cứng (hardcode hex color).
-- **Glassmorphism & Premium Aesthetic (Bắt buộc)**: Toàn bộ dự án phải duy trì giao diện tối giản, hiện đại và sang trọng:
-  - **Containers/Cards**: Áp dụng hiệu ứng kính mờ (Frosted glass) với các class như `bg-white/10`, `backdrop-blur-xl`, viền mỏng `border-white/20`, bo góc lớn `rounded-2xl` hoặc `rounded-[24px]` và shadow sâu.
-  - **Typography**: Cấm dùng font mặc định của trình duyệt. Luôn dùng font **Inter** cho mọi văn bản để tăng tính corporate. Sử dụng high-contrast (chữ trắng/sáng trên nền tối).
-  - **Backgrounds**: Sử dụng ảnh nền phong cảnh chất lượng cao tông màu xanh đậm (teal/deep blue) kèm overlay tối mờ (`bg-[#022129]/40`), hoặc sử dụng các mảng màu gradient blur (blobs) mượt mà.
-  - **Inputs & Controls**: Ô nhập liệu phải bo góc `rounded-xl`, nền trong suốt mờ, kèm line icons tinh tế (Lucide React với `strokeWidth={2}`). Nút bấm chính (CTA) dùng nền trắng nguyên khối chữ đen để tạo điểm nhấn mạnh mẽ.
+- **Glassmorphism & Premium Aesthetic (Bắt buộc)**: Toàn bộ dự án phải duy trì giao diện tối giản, hiện đại và sang trọng, hỗ trợ linh hoạt cả giao diện Sáng (Light Mode) và Tối (Dark Mode) theo hệ thống:
+  - **Containers/Cards**: Áp dụng hiệu ứng kính mờ (Frosted glass). Chế độ sáng sử dụng nền sáng mờ (`bg-card/45` kết hợp `backdrop-blur-xl`, viền tối mỏng `border-border/50` và shadow nhẹ). Chế độ tối sử dụng nền tối mờ (`bg-white/3 backdrop-blur-xl`, viền sáng mỏng `border-white/10` và shadow sâu).
+  - **Typography**: Luôn dùng font **Inter** cho mọi văn bản. Màu chữ tự động điều chỉnh độ tương phản cao tương ứng theo theme sáng/tối để đảm bảo dễ đọc.
+  - **Backgrounds**: Sử dụng các mảng màu gradient phát sáng (ambient blobs) dịu nhẹ ở dưới nền để tăng chiều sâu không gian (3D depth).
+  - **Inputs & Controls**: Ô nhập liệu bo góc `rounded-xl`, nền mờ (`bg-muted/20` ở chế độ sáng, `bg-white/5` ở chế độ tối), viền trong suốt nhẹ, kèm line icons tinh tế (Lucide React). Nút bấm chính (CTA) sử dụng tương phản đảo ngược (`bg-foreground text-background hover:bg-foreground/90`) để tạo điểm nhấn mạnh mẽ trên cả hai chế độ.
 
 ## 5. Xử lý Form và Validation
 - Mọi form phải được wrap bằng component `<Form>` của `shadcn/ui`.

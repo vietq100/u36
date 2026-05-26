@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -27,7 +27,8 @@ interface UnitFormProps {
 }
 
 export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps) {
-  const projects = usePropertiesStore((state) => state.projects).filter(p => p.isActive);
+  const rawProjects = usePropertiesStore((state) => state.projects);
+  const projects = useMemo(() => rawProjects.filter(p => p.isActive), [rawProjects]);
   const statuses = usePropertiesStore((state) => state.statuses);
 
   const form = useForm<UnitFormValues>({

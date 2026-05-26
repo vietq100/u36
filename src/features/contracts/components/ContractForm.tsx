@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -35,8 +35,11 @@ interface ContractFormProps {
 export function ContractForm({ open, onOpenChange, contract, onSuccess }: ContractFormProps) {
   const statuses = useContractsStore((state) => state.statuses);
   const units = usePropertiesStore((state) => state.units);
-  const companies = useClientsStore((state) => state.companies).filter(c => c.isActive);
-  const contacts = useClientsStore((state) => state.contacts).filter(c => c.isActive);
+  const rawCompanies = useClientsStore((state) => state.companies);
+  const rawContacts = useClientsStore((state) => state.contacts);
+
+  const companies = useMemo(() => rawCompanies.filter(c => c.isActive), [rawCompanies]);
+  const contacts = useMemo(() => rawContacts.filter(c => c.isActive), [rawContacts]);
 
   // Form setup
   const form = useForm<ContractFormValues>({

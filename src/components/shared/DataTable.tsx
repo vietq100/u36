@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4 relative">
-      <div className="rounded-xl border border-border/40 bg-card/75 backdrop-blur-md relative min-h-[300px] overflow-hidden shadow-md">
+      <div className="rounded-2xl border border-border/50 dark:border-white/10 bg-card/40 dark:bg-white/3 backdrop-blur-md relative min-h-[300px] overflow-hidden shadow-md">
         {isLoading && <LoadingOverlay />}
         
         <Table>
@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead key={header.id}>
                       {header.isPlaceholder
-                        ? null
+                         ? null
                         : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="transition-colors hover:bg-muted/40 group cursor-default"
+                  className="transition-colors hover:bg-muted/40 dark:hover:bg-white/5 group cursor-default"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

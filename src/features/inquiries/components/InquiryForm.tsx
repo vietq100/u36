@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -33,9 +33,13 @@ interface InquiryFormProps {
 
 export function InquiryForm({ open, onOpenChange, inquiry, onSuccess }: InquiryFormProps) {
   const statuses = useInquiriesStore((state) => state.statuses);
-  const projects = usePropertiesStore((state) => state.projects).filter(p => p.isActive);
-  const companies = useClientsStore((state) => state.companies).filter(c => c.isActive);
-  const contacts = useClientsStore((state) => state.contacts).filter(c => c.isActive);
+  const rawProjects = usePropertiesStore((state) => state.projects);
+  const rawCompanies = useClientsStore((state) => state.companies);
+  const rawContacts = useClientsStore((state) => state.contacts);
+
+  const projects = useMemo(() => rawProjects.filter(p => p.isActive), [rawProjects]);
+  const companies = useMemo(() => rawCompanies.filter(c => c.isActive), [rawCompanies]);
+  const contacts = useMemo(() => rawContacts.filter(c => c.isActive), [rawContacts]);
 
   // Form setup
   const form = useForm<InquiryFormValues>({
