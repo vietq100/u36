@@ -37,9 +37,9 @@ export function RichTextEditor({
   }
 
   return (
-    <div className="border border-input rounded-md overflow-hidden bg-card focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 transition-all">
+    <div className="border border-border rounded-xl overflow-hidden bg-input focus-within:border-ring focus-within:ring-1 focus-within:ring-ring transition-all duration-200">
       {/* Editor Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 bg-muted/40 border-b border-border/50 p-1.5">
+      <div className="flex flex-wrap items-center gap-1 bg-muted/40 border-b border-border p-1.5">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}

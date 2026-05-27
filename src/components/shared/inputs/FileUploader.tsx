@@ -1,5 +1,5 @@
 import { useDropzone } from "react-dropzone";
-import { UploadCloud, File, X } from "lucide-react";
+import { UploadCloud, File as FileIcon, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -69,7 +69,7 @@ export function FileUploader({
       <div
         {...getRootProps()}
         className={cn(
-          "relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted px-6 py-6 text-center cursor-pointer transition-all hover:bg-muted/10 hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed",
+          "relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-input px-6 py-6 text-center cursor-pointer transition-all hover:bg-muted/10 hover:border-ring focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
           isDragActive && "border-primary bg-primary/5",
           disabled && "opacity-50 cursor-not-allowed pointer-events-none"
         )}
@@ -89,7 +89,7 @@ export function FileUploader({
               </div>
             ) : (
               <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <File className="h-7 w-7" />
+                <FileIcon className="h-7 w-7" />
               </div>
             )}
 

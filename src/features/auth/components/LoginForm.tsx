@@ -59,7 +59,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="w-full rounded-[24px] border border-white/20 bg-white/10 p-8 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] text-white">
+    <div className="w-full rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] text-white">
       <div className="mb-8 text-center">
         <h1 className="text-[32px] font-bold tracking-tight text-white mb-1">Login</h1>
       </div>

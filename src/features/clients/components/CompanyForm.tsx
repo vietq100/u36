@@ -2,24 +2,16 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { DetailDialog } from "@/components/shared/DetailDialog";
+import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
+import { FormSelect } from "@/components/shared/forms/FormSelect";
+import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor";
 import { useCreateOrUpdateCompany } from "../hooks/useClients";
 import { useClientsStore } from "../stores/useClientsStore";
 import { companySchema } from "../types";
 import type { Company, CompanyFormValues } from "../types";
-import { RichTextEditor } from "@/components/shared/forms/RichTextEditor";
-import { FileUploader } from "@/components/shared/forms/FileUploader";
+import { FileUploader } from "@/components/shared/inputs/FileUploader";
 interface CompanyFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -90,17 +82,16 @@ export function CompanyForm({ open, onOpenChange, company, onSuccess }: CompanyF
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px]">
-        <DialogHeader>
-          <DialogTitle>{company ? "Chỉnh sửa doanh nghiệp" : "Thêm mới doanh nghiệp"}</DialogTitle>
-          <DialogDescription>
-            Nhập thông tin chi tiết doanh nghiệp đối tác hoặc khách thuê. Bấm Lưu khi hoàn tất.
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
+    <DetailDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={company ? "Chỉnh sửa doanh nghiệp" : "Thêm mới doanh nghiệp"}
+      description="Nhập thông tin chi tiết doanh nghiệp đối tác hoặc khách thuê. Bấm Lưu khi hoàn tất."
+      formId="company-form"
+      isPending={mutation.isPending}
+    >
+      <Form {...form}>
+        <form id="company-form" onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
             <FormInput
               control={form.control}
               name="companyName"
@@ -157,84 +148,37 @@ export function CompanyForm({ open, onOpenChange, company, onSuccess }: CompanyF
 
             <div className="grid grid-cols-2 gap-4">
               {/* Industry Select Dropdown */}
-              <FormField
-                control={form.control as any}
+              <FormSelect
+                control={form.control}
                 name="industryId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Lĩnh vực hoạt động</FormLabel>
-                    <Select
-                      disabled={mutation.isPending}
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      value={String(field.value || 0)}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
-                          <SelectValue placeholder="Chọn lĩnh vực" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="0">-- Chọn lĩnh vực --</SelectItem>
-                        {industries.map((ind) => (
-                          <SelectItem key={ind.id} value={String(ind.id)}>
-                            {ind.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Lĩnh vực hoạt động"
+                options={[
+                  { value: 0, label: "-- Chọn lĩnh vực --" },
+                  ...industries.map((ind) => ({ value: ind.id, label: ind.name }))
+                ]}
+                placeholder="Chọn lĩnh vực"
+                disabled={mutation.isPending}
               />
 
               {/* Nationality Select Dropdown */}
-              <FormField
-                control={form.control as any}
+              <FormSelect
+                control={form.control}
                 name="nationalityId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quốc tịch / Quốc gia</FormLabel>
-                    <Select
-                      disabled={mutation.isPending}
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      value={String(field.value || 0)}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
-                          <SelectValue placeholder="Chọn quốc gia" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="0">-- Chọn quốc gia --</SelectItem>
-                        {nationalities.map((nat) => (
-                          <SelectItem key={nat.id} value={String(nat.id)}>
-                            {nat.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Quốc tịch / Quốc gia"
+                options={[
+                  { value: 0, label: "-- Chọn quốc gia --" },
+                  ...nationalities.map((nat) => ({ value: nat.id, label: nat.name }))
+                ]}
+                placeholder="Chọn quốc gia"
+                disabled={mutation.isPending}
               />
             </div>
 
-            <FormField
-              control={form.control as any}
+            <FormRichTextEditor
+              control={form.control}
               name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ghi chú / Mô tả doanh nghiệp</FormLabel>
-                  <FormControl>
-                    <RichTextEditor
-                      value={field.value || ""}
-                      onChange={field.onChange}
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Ghi chú / Mô tả doanh nghiệp"
+              disabled={mutation.isPending}
             />
 
             <FormItem>
@@ -252,22 +196,8 @@ export function CompanyForm({ open, onOpenChange, company, onSuccess }: CompanyF
               </FormControl>
             </FormItem>
 
-            <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
-              >
-                Hủy
-              </Button>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? "Đang lưu..." : "Lưu thay đổi"}
-              </Button>
-            </DialogFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </DetailDialog>
   );
 }

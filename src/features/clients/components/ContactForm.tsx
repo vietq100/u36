@@ -2,25 +2,17 @@ import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
+import { FormCombobox } from "@/components/shared/forms/FormCombobox";
+import { FormSelect } from "@/components/shared/forms/FormSelect";
+import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor";
 import { useCreateOrUpdateContact } from "../hooks/useClients";
 import { useClientsStore } from "../stores/useClientsStore";
 import { contactSchema } from "../types";
 import type { Contact, ContactFormValues } from "../types";
-import { Combobox } from "@/components/shared/forms/Combobox";
-import { RichTextEditor } from "@/components/shared/forms/RichTextEditor";
-import { FileUploader } from "@/components/shared/forms/FileUploader";
+import { FileUploader } from "@/components/shared/inputs/FileUploader";
+import { DetailDialog } from "@/components/shared/DetailDialog";
 interface ContactFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -94,17 +86,16 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px]">
-        <DialogHeader>
-          <DialogTitle>{contact ? "Chỉnh sửa khách hàng / liên hệ" : "Thêm mới khách hàng / liên hệ"}</DialogTitle>
-          <DialogDescription>
-            Nhập thông tin chi tiết liên hệ cá nhân hoặc người đại diện doanh nghiệp. Bấm Lưu khi hoàn tất.
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
+    <DetailDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={contact ? "Chỉnh sửa khách hàng / liên hệ" : "Thêm mới khách hàng / liên hệ"}
+      description="Nhập thông tin chi tiết liên hệ cá nhân hoặc người đại diện doanh nghiệp. Bấm Lưu khi hoàn tất."
+      formId="contact-form"
+      isPending={mutation.isPending}
+    >
+      <Form {...form}>
+        <form id="contact-form" onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
             <FormInput
               control={form.control}
               name="contactName"
@@ -115,27 +106,16 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
             />
 
             {/* Company Select Dropdown */}
-            <FormField
-              control={form.control as any}
+            <FormCombobox
+              control={form.control}
               name="companyId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Thuộc Doanh nghiệp (Nếu có)</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      options={[
-                        { value: 0, label: "-- Cá nhân tự do (Không liên kết công ty) --" },
-                        ...companies.map(c => ({ value: c.id, label: c.companyName }))
-                      ]}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="Tìm kiếm & chọn doanh nghiệp..."
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Thuộc Doanh nghiệp (Nếu có)"
+              options={[
+                { value: 0, label: "-- Cá nhân tự do (Không liên kết công ty) --" },
+                ...companies.map(c => ({ value: c.id, label: c.companyName }))
+              ]}
+              placeholder="Tìm kiếm & chọn doanh nghiệp..."
+              disabled={mutation.isPending}
             />
 
             <div className="grid grid-cols-2 gap-4">
@@ -160,145 +140,66 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
 
             <div className="grid grid-cols-2 gap-4">
               {/* Gender Dropdown */}
-              <FormField
-                control={form.control as any}
+              <FormSelect
+                control={form.control}
                 name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Giới tính</FormLabel>
-                    <Select
-                      disabled={mutation.isPending}
-                      onValueChange={field.onChange}
-                      value={field.value || "MALE"}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
-                          <SelectValue placeholder="Chọn giới tính" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="MALE">Nam</SelectItem>
-                        <SelectItem value="FEMALE">Nữ</SelectItem>
-                        <SelectItem value="OTHER">Khác</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Giới tính"
+                options={[
+                  { value: "MALE", label: "Nam" },
+                  { value: "FEMALE", label: "Nữ" },
+                  { value: "OTHER", label: "Khác" }
+                ]}
+                placeholder="Chọn giới tính"
+                disabled={mutation.isPending}
               />
 
               {/* Nationality Select Dropdown */}
-              <FormField
-                control={form.control as any}
+              <FormSelect
+                control={form.control}
                 name="nationalityId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quốc tịch</FormLabel>
-                    <Select
-                      disabled={mutation.isPending}
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      value={String(field.value || 0)}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
-                          <SelectValue placeholder="Chọn quốc tịch" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="0">-- Chọn quốc tịch --</SelectItem>
-                        {nationalities.map((nat) => (
-                          <SelectItem key={nat.id} value={String(nat.id)}>
-                            {nat.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Quốc tịch"
+                options={[
+                  { value: 0, label: "-- Chọn quốc tịch --" },
+                  ...nationalities.map((nat) => ({ value: nat.id, label: nat.name }))
+                ]}
+                placeholder="Chọn quốc tịch"
+                disabled={mutation.isPending}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               {/* Level Select Dropdown */}
-              <FormField
-                control={form.control as any}
+              <FormSelect
+                control={form.control}
                 name="levelId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Chức vụ / Cấp bậc</FormLabel>
-                    <Select
-                      disabled={mutation.isPending}
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      value={String(field.value || 0)}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
-                          <SelectValue placeholder="Chọn chức vụ" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="0">-- Chọn chức vụ --</SelectItem>
-                        {levels.map((lvl) => (
-                          <SelectItem key={lvl.id} value={String(lvl.id)}>
-                            {lvl.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Chức vụ / Cấp bậc"
+                options={[
+                  { value: 0, label: "-- Chọn chức vụ --" },
+                  ...levels.map((lvl) => ({ value: lvl.id, label: lvl.name }))
+                ]}
+                placeholder="Chọn chức vụ"
+                disabled={mutation.isPending}
               />
 
               {/* LeadSource Select Dropdown */}
-              <FormField
-                control={form.control as any}
+              <FormSelect
+                control={form.control}
                 name="leadSourceId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nguồn tiềm năng</FormLabel>
-                    <Select
-                      disabled={mutation.isPending}
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      value={String(field.value || 0)}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
-                          <SelectValue placeholder="Chọn nguồn khách" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="0">-- Chọn nguồn --</SelectItem>
-                        {leadSources.map((ls) => (
-                          <SelectItem key={ls.id} value={String(ls.id)}>
-                            {ls.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Nguồn tiềm năng"
+                options={[
+                  { value: 0, label: "-- Chọn nguồn --" },
+                  ...leadSources.map((ls) => ({ value: ls.id, label: ls.name }))
+                ]}
+                placeholder="Chọn nguồn khách"
+                disabled={mutation.isPending}
               />
             </div>
 
-            <FormField
-              control={form.control as any}
+            <FormRichTextEditor
+              control={form.control}
               name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ghi chú chi tiết</FormLabel>
-                  <FormControl>
-                    <RichTextEditor
-                      value={field.value || ""}
-                      onChange={field.onChange}
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Ghi chú chi tiết"
+              disabled={mutation.isPending}
             />
 
             <FormItem>
@@ -317,22 +218,8 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
               </FormControl>
             </FormItem>
 
-            <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
-              >
-                Hủy
-              </Button>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? "Đang lưu..." : "Lưu thay đổi"}
-              </Button>
-            </DialogFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </DetailDialog>
   );
 }

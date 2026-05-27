@@ -2,21 +2,21 @@ import { useState } from "react";
 import { useAppStore } from "@/stores/useAppStore";
 import { useAuthStore } from "@/features/auth/stores/useAuthStore";
 import { Button } from "@/components/ui/button";
-import { 
-  Menu, 
-  LogOut, 
-  User, 
-  Sun, 
-  Moon, 
-  Monitor, 
-  Search, 
-  Plus, 
-  Building2, 
-  Users, 
-  FileText, 
-  MessageSquare, 
-  Bell, 
-  Settings, 
+import {
+  Menu,
+  LogOut,
+  User,
+  Sun,
+  Moon,
+  Monitor,
+  Search,
+  Plus,
+  Building2,
+  Users,
+  FileText,
+  MessageSquare,
+  Bell,
+  Settings,
   Sparkles,
   ChevronDown,
   KeyRound
@@ -47,7 +47,7 @@ export function Header() {
   const toggleSidebar = useAppStore((state) => state.toggleSidebar);
   const theme = useAppStore((state) => state.theme);
   const setTheme = useAppStore((state) => state.setTheme);
-  
+
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const { data: pictureData } = useGetApiServicesAppProfileGetProfilePicture({
@@ -118,16 +118,16 @@ export function Header() {
     <header className="flex h-14 items-center justify-between border-b border-border/50 bg-card/45 dark:bg-white/3 backdrop-blur-lg px-4 md:px-6 sticky top-0 z-30">
       {/* Left section: Sidebar toggle & Global Search Mock */}
       <div className="flex items-center gap-4 flex-1">
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={toggleSidebar}
           aria-label="Toggle Sidebar"
           className="hover:bg-muted/50 dark:hover:bg-white/5 hover:text-accent transition-all duration-200 shrink-0"
         >
           <Menu className="h-5 w-5" />
         </Button>
-        
+
         {/* Mock Search Input */}
         <form onSubmit={handleQuickSearch} className="relative hidden md:block max-w-xs w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -141,13 +141,13 @@ export function Header() {
 
       {/* Right section: Quick Actions, Notifications, Theme, & Profile */}
       <div className="flex items-center gap-2 md:gap-3">
-        
+
         {/* Quick Add Dropdown Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="h-8 px-2.5 text-xs font-semibold bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 hover:text-primary transition-all flex items-center gap-1.5"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -155,7 +155,7 @@ export function Header() {
               <ChevronDown className="h-3 w-3 opacity-60" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52 border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl shadow-2xl rounded-xl">
+          <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuLabel>Tạo mới dữ liệu</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
@@ -193,7 +193,7 @@ export function Header() {
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-destructive animate-pulse" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80 border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl shadow-2xl rounded-xl">
+          <DropdownMenuContent align="end" className="w-80">
             <DropdownMenuLabel className="flex justify-between items-center">
               <span>Thông báo gần đây</span>
               <span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full">3 tin mới</span>
@@ -249,7 +249,7 @@ export function Header() {
                 <ChevronDown className="h-3.5 w-3.5 text-muted-foreground hidden md:block shrink-0 pr-0.5" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl shadow-2xl rounded-xl">
+            <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel className="font-normal flex flex-col gap-0.5 p-3">
                 <div className="flex items-center gap-1">
                   <Sparkles className="h-3.5 w-3.5 text-accent animate-pulse" />
@@ -261,7 +261,7 @@ export function Header() {
                 </span>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              
+
               <DropdownMenuGroup>
                 <DropdownMenuItem onClick={() => setIsProfileOpen(true)} className="cursor-pointer">
                   <User className="h-4 w-4 mr-2" />
@@ -284,7 +284,7 @@ export function Header() {
                   {getThemeIcon()}
                   <span className="ml-2">Giao diện ({getThemeLabel()})</span>
                 </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent className="border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl shadow-2xl rounded-xl">
+                <DropdownMenuSubContent>
                   <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer flex justify-between items-center">
                     <div className="flex items-center">
                       <Sun className="h-4 w-4 mr-2 text-amber-500" />
@@ -310,8 +310,8 @@ export function Header() {
               </DropdownMenuSub>
 
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                onClick={logout} 
+              <DropdownMenuItem
+                onClick={logout}
                 className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive dark:focus:bg-destructive/20"
                 variant="destructive"
               >

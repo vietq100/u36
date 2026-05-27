@@ -6,16 +6,8 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/stores/useAuthStore";
 import { Camera, Loader2 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ActionModal } from "@/components/shared/ActionModal";
 import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormInput } from "@/components/shared/forms/FormInput";
 
@@ -209,124 +201,111 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   const isPending = realProfileMutation.isPending;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[420px]">
-        <DialogHeader>
-          <DialogTitle>Hồ sơ cá nhân</DialogTitle>
-          <DialogDescription>
-            Xem và cập nhật thông tin tài khoản của bạn trên hệ thống.
-          </DialogDescription>
-        </DialogHeader>
+    <ActionModal
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Hồ sơ cá nhân"
+      description="Xem và cập nhật thông tin tài khoản của bạn trên hệ thống."
+      formId="profile-form"
+      isPending={isPending}
+      saveLabel="Lưu thay đổi"
+      cancelLabel="Hủy"
+      maxWidth="md"
+    >
+      {isLoading ? (
+        <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
+          <Loader2 className="h-6 w-6 animate-spin mr-2 text-primary" />
+          Đang tải thông tin...
+        </div>
+      ) : (
+        <div className="space-y-4 py-1">
+          {/* Avatar Section */}
+          <div className="flex flex-col items-center justify-center pb-4">
+            <div 
+              onClick={triggerFileInput}
+              className="relative group h-20 w-20 rounded-full border-2 border-primary/20 shadow-md cursor-pointer overflow-hidden flex items-center justify-center bg-primary/5 hover:border-primary/50 transition-all duration-300"
+            >
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+              ) : (
+                <span className="text-xl font-bold text-primary">{initials}</span>
+              )}
 
-        {isLoading ? (
-          <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
-            <Loader2 className="h-6 w-6 animate-spin mr-2 text-primary" />
-            Đang tải thông tin...
-          </div>
-        ) : (
-          <div className="space-y-4 py-2">
-            {/* Avatar Section */}
-            <div className="flex flex-col items-center justify-center pb-4">
-              <div 
-                onClick={triggerFileInput}
-                className="relative group h-20 w-20 rounded-full border-2 border-primary/20 shadow-md cursor-pointer overflow-hidden flex items-center justify-center bg-primary/5 hover:border-primary/50 transition-all duration-300"
-              >
-                {avatarUrl ? (
-                  <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {isUploading ? (
+                  <Loader2 className="h-5 w-5 text-white animate-spin" />
                 ) : (
-                  <span className="text-xl font-bold text-primary">{initials}</span>
+                  <Camera className="h-5 w-5 text-white" />
                 )}
-
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {isUploading ? (
-                    <Loader2 className="h-5 w-5 text-white animate-spin" />
-                  ) : (
-                    <Camera className="h-5 w-5 text-white" />
-                  )}
-                </div>
               </div>
-              <span className="text-xs text-muted-foreground mt-2 hover:text-foreground cursor-pointer font-medium" onClick={triggerFileInput}>
-                {isUploading ? "Đang tải lên..." : "Thay đổi ảnh đại diện"}
-              </span>
-
-              {/* Hidden file input */}
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                accept="image/*" 
-                className="hidden" 
-                disabled={isUploading}
-              />
             </div>
+            <span className="text-xs text-muted-foreground mt-2 hover:text-foreground cursor-pointer font-medium" onClick={triggerFileInput}>
+              {isUploading ? "Đang tải lên..." : "Thay đổi ảnh đại diện"}
+            </span>
 
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                {/* Username (Read-only) */}
-                <FormItem>
-                  <FormLabel>Tên tài khoản (Username)</FormLabel>
-                  <FormControl>
-                    <Input
-                      value={currentUserName}
-                      disabled
-                      className="bg-muted/50 text-muted-foreground select-none cursor-not-allowed border-dashed h-10 rounded-xl"
-                    />
-                  </FormControl>
-                </FormItem>
-
-                {/* Display Name */}
-                <FormInput
-                  control={form.control}
-                  name="displayName"
-                  label="Họ và Tên"
-                  placeholder="Nhập họ và tên..."
-                  className="h-10 rounded-xl"
-                  required
-                  disabled={isPending}
-                />
-
-                {/* Email Address */}
-                <FormInput
-                  control={form.control}
-                  name="emailAddress"
-                  label="Địa chỉ Email"
-                  placeholder="email@example.com"
-                  type="email"
-                  className="h-10 rounded-xl"
-                  required
-                  disabled={isPending}
-                />
-
-                {/* Phone Number */}
-                <FormInput
-                  control={form.control}
-                  name="phoneNumber"
-                  label="Số điện thoại"
-                  placeholder="Nhập số điện thoại..."
-                  className="h-10 rounded-xl"
-                  required
-                  disabled={isPending}
-                />
-
-                <DialogFooter className="pt-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => onOpenChange(false)}
-                    disabled={isPending}
-                  >
-                    Hủy
-                  </Button>
-                  <Button type="submit" disabled={isPending}>
-                    {isPending ? "Đang lưu..." : "Lưu thay đổi"}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </Form>
+            {/* Hidden file input */}
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              accept="image/*" 
+              className="hidden" 
+              disabled={isUploading}
+            />
           </div>
-        )}
-      </DialogContent>
-    </Dialog>
+
+          <Form {...form}>
+            <form id="profile-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {/* Username (Read-only) */}
+              <FormItem>
+                <FormLabel>Tên tài khoản (Username)</FormLabel>
+                <FormControl>
+                  <Input
+                    value={currentUserName}
+                    disabled
+                    className="bg-muted/50 text-muted-foreground select-none cursor-not-allowed border-dashed h-10 rounded-xl"
+                  />
+                </FormControl>
+              </FormItem>
+
+              {/* Display Name */}
+              <FormInput
+                control={form.control}
+                name="displayName"
+                label="Họ và Tên"
+                placeholder="Nhập họ và tên..."
+                className="h-10 rounded-xl"
+                required
+                disabled={isPending}
+              />
+
+              {/* Email Address */}
+              <FormInput
+                control={form.control}
+                name="emailAddress"
+                label="Địa chỉ Email"
+                placeholder="email@example.com"
+                type="email"
+                className="h-10 rounded-xl"
+                required
+                disabled={isPending}
+              />
+
+              {/* Phone Number */}
+              <FormInput
+                control={form.control}
+                name="phoneNumber"
+                label="Số điện thoại"
+                placeholder="Nhập số điện thoại..."
+                className="h-10 rounded-xl"
+                required
+                disabled={isPending}
+              />
+            </form>
+          </Form>
+        </div>
+      )}
+    </ActionModal>
   );
 }

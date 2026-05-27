@@ -2,21 +2,14 @@ import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { DetailDialog } from "@/components/shared/DetailDialog";
+import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
-import { Combobox } from "@/components/shared/forms/Combobox";
-import { RichTextEditor } from "@/components/shared/forms/RichTextEditor";
-import { FileUploader } from "@/components/shared/forms/FileUploader";
+import { FormCombobox } from "@/components/shared/forms/FormCombobox";
+import { FormSelect } from "@/components/shared/forms/FormSelect";
+import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor";
+import { FormDatePicker } from "@/components/shared/forms/FormDatePicker";
+import { FileUploader } from "@/components/shared/inputs/FileUploader";
 
 import { useCreateOrUpdateContract } from "../hooks/useContracts";
 import { useContractsStore } from "../stores/useContractsStore";
@@ -140,17 +133,17 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess }: Contra
   }, [watchUnitId, contract, units, form]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{contract ? "Chỉnh sửa hợp đồng thuê" : "Tạo mới hợp đồng thuê"}</DialogTitle>
-          <DialogDescription>
-            Khai báo các điều khoản thuê bất động sản, bên thuê và tài liệu đính kèm. Bấm Lưu khi hoàn tất.
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
+    <DetailDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={contract ? "Chỉnh sửa hợp đồng thuê" : "Tạo mới hợp đồng thuê"}
+      description="Khai báo các điều khoản thuê bất động sản, bên thuê và tài liệu đính kèm. Bấm Lưu khi hoàn tất."
+      formId="contract-form"
+      isPending={mutation.isPending}
+      saveLabel={contract ? "Lưu thay đổi" : "Ký Hợp đồng"}
+    >
+      <Form {...form}>
+        <form id="contract-form" onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
             
             <div className="grid grid-cols-2 gap-4">
               <FormInput
@@ -163,116 +156,66 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess }: Contra
               />
 
               {/* Status Select */}
-              <FormField
-                control={form.control as any}
+              <FormSelect
+                control={form.control}
                 name="statusId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Trạng thái hợp đồng</FormLabel>
-                    <Select
-                      disabled={mutation.isPending}
-                      onValueChange={(val) => field.onChange(Number(val))}
-                      value={String(field.value || 1)}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
-                          <SelectValue placeholder="Chọn trạng thái" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {statuses.map((s) => (
-                          <SelectItem key={s.id} value={String(s.id)}>
-                            <div className="flex items-center gap-2">
-                              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: s.color }} />
-                              {s.name}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Trạng thái hợp đồng"
+                options={statuses.map((s) => ({
+                  value: s.id,
+                  label: (
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: s.color }} />
+                      {s.name}
+                    </div>
+                  ),
+                }))}
+                placeholder="Chọn trạng thái"
+                disabled={mutation.isPending}
               />
             </div>
 
             {/* Select Unit */}
-            <FormField
-              control={form.control as any}
+            <FormCombobox
+              control={form.control}
               name="unitId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Căn hộ / Mặt bằng thương mại</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      options={unitOptions}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="Tìm theo mã căn hộ hoặc tên dự án..."
-                      disabled={mutation.isPending || !!contract} // Unit cannot be changed directly after creation
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Căn hộ / Mặt bằng thương mại"
+              options={unitOptions}
+              placeholder="Tìm theo mã căn hộ hoặc tên dự án..."
+              disabled={mutation.isPending || !!contract} // Unit cannot be changed directly after creation
             />
 
             {/* Select Company */}
-            <FormField
-              control={form.control as any}
+            <FormCombobox
+              control={form.control}
               name="companyId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Doanh nghiệp thuê (Bên B)</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      options={companyOptions}
-                      value={field.value || 0}
-                      onChange={field.onChange}
-                      placeholder="Tìm và chọn công ty đối tác..."
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Doanh nghiệp thuê (Bên B)"
+              options={companyOptions}
+              placeholder="Tìm và chọn công ty đối tác..."
+              disabled={mutation.isPending}
             />
 
             {/* Select Contact Signatory */}
-            <FormField
-              control={form.control as any}
+            <FormCombobox
+              control={form.control}
               name="contactId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Người đại diện ký kết</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      options={contactOptions}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="Chọn liên hệ đại diện..."
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Người đại diện ký kết"
+              options={contactOptions}
+              placeholder="Chọn liên hệ đại diện..."
+              disabled={mutation.isPending}
             />
 
             <div className="grid grid-cols-2 gap-4">
-              <FormInput
+              <FormDatePicker
                 control={form.control}
                 name="commencementDate"
                 label="Ngày bắt đầu"
-                type="date"
                 required
                 disabled={mutation.isPending}
               />
-              <FormInput
+              <FormDatePicker
                 control={form.control}
                 name="expiryDate"
                 label="Ngày hết hạn"
-                type="date"
                 required
                 disabled={mutation.isPending}
               />
@@ -298,22 +241,11 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess }: Contra
             </div>
 
             {/* Description clauses */}
-            <FormField
-              control={form.control as any}
+            <FormRichTextEditor
+              control={form.control}
               name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Điều khoản đặc biệt / Ghi chú</FormLabel>
-                  <FormControl>
-                    <RichTextEditor
-                      value={field.value || ""}
-                      onChange={field.onChange}
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Điều khoản đặc biệt / Ghi chú"
+              disabled={mutation.isPending}
             />
 
             {/* Attachment scan */}
@@ -332,22 +264,8 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess }: Contra
               </FormControl>
             </FormItem>
 
-            <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
-              >
-                Hủy
-              </Button>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? "Đang lưu..." : "Ký Hợp đồng"}
-              </Button>
-            </DialogFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </DetailDialog>
   );
 }

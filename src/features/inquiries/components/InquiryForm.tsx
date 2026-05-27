@@ -2,20 +2,12 @@ import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { DetailDialog } from "@/components/shared/DetailDialog";
+import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
-import { Combobox } from "@/components/shared/forms/Combobox";
-import { RichTextEditor } from "@/components/shared/forms/RichTextEditor";
+import { FormCombobox } from "@/components/shared/forms/FormCombobox";
+import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor";
+import { FormSelect } from "@/components/shared/forms/FormSelect";
 
 import { useCreateOrUpdateInquiry } from "../hooks/useInquiries";
 import { useInquiriesStore } from "../stores/useInquiriesStore";
@@ -103,79 +95,45 @@ export function InquiryForm({ open, onOpenChange, inquiry, onSuccess }: InquiryF
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px]">
-        <DialogHeader>
-          <DialogTitle>{inquiry ? "Cập nhật yêu cầu hỗ trợ" : "Ghi nhận yêu cầu hỗ trợ mới"}</DialogTitle>
-          <DialogDescription>
-            Điền chi tiết nhu cầu tìm kiếm mặt bằng, diện tích, ngân sách và thông tin liên hệ của khách hàng.
-          </DialogDescription>
-        </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
+    <DetailDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={inquiry ? "Cập nhật yêu cầu hỗ trợ" : "Ghi nhận yêu cầu hỗ trợ mới"}
+      description="Điền chi tiết nhu cầu tìm kiếm mặt bằng, diện tích, ngân sách và thông tin liên hệ của khách hàng."
+      formId="inquiry-form"
+      isPending={mutation.isPending}
+    >
+      <Form {...form}>
+        <form id="inquiry-form" onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
             
             {/* Select Representative Contact */}
-            <FormField
-              control={form.control as any}
+            <FormCombobox
+              control={form.control}
               name="contactId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Khách hàng yêu cầu (Liên hệ đại diện)</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      options={contactOptions}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="Tìm theo họ tên hoặc số điện thoại..."
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Khách hàng yêu cầu (Liên hệ đại diện)"
+              options={contactOptions}
+              placeholder="Tìm theo họ tên hoặc số điện thoại..."
+              disabled={mutation.isPending}
             />
 
             {/* Select Associated Company */}
-            <FormField
-              control={form.control as any}
+            <FormCombobox
+              control={form.control}
               name="companyId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Doanh nghiệp liên kết (Tùy chọn)</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      options={companyOptions}
-                      value={field.value || 0}
-                      onChange={field.onChange}
-                      placeholder="Tìm và chọn doanh nghiệp đối tác..."
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Doanh nghiệp liên kết (Tùy chọn)"
+              options={companyOptions}
+              placeholder="Tìm và chọn doanh nghiệp đối tác..."
+              disabled={mutation.isPending}
             />
 
             {/* Select Project of Interest */}
-            <FormField
-              control={form.control as any}
+            <FormCombobox
+              control={form.control}
               name="projectId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Dự án đô thị quan tâm</FormLabel>
-                  <FormControl>
-                    <Combobox
-                      options={projectOptions}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="Chọn dự án khu đô thị..."
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Dự án đô thị quan tâm"
+              options={projectOptions}
+              placeholder="Chọn dự án khu đô thị..."
+              disabled={mutation.isPending}
             />
 
             <div className="grid grid-cols-2 gap-4">
@@ -198,73 +156,33 @@ export function InquiryForm({ open, onOpenChange, inquiry, onSuccess }: InquiryF
             </div>
 
             {/* Status select */}
-            <FormField
-              control={form.control as any}
+            <FormSelect
+              control={form.control}
               name="statusId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Trạng thái xử lý yêu cầu</FormLabel>
-                  <Select
-                    disabled={mutation.isPending}
-                    onValueChange={(val) => field.onChange(Number(val))}
-                    value={String(field.value || 1)}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full h-10 bg-card text-foreground border-input">
-                        <SelectValue placeholder="Chọn trạng thái" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {statuses.map((s) => (
-                        <SelectItem key={s.id} value={String(s.id)}>
-                          <div className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: s.color }} />
-                            {s.name}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Trạng thái xử lý yêu cầu"
+              options={statuses.map((s) => ({
+                value: s.id,
+                label: (
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: s.color }} />
+                    {s.name}
+                  </div>
+                ),
+              }))}
+              placeholder="Chọn trạng thái"
+              disabled={mutation.isPending}
             />
 
             {/* Description clauses */}
-            <FormField
-              control={form.control as any}
+            <FormRichTextEditor
+              control={form.control}
               name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Chi tiết nhu cầu & Lịch sử trao đổi</FormLabel>
-                  <FormControl>
-                    <RichTextEditor
-                      value={field.value || ""}
-                      onChange={field.onChange}
-                      disabled={mutation.isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Chi tiết nhu cầu & Lịch sử trao đổi"
+              disabled={mutation.isPending}
             />
 
-            <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
-              >
-                Hủy
-              </Button>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? "Đang lưu..." : "Ghi nhận Yêu cầu"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+        </form>
+      </Form>
+    </DetailDialog>
   );
 }
