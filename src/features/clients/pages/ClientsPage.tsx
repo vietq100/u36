@@ -5,6 +5,7 @@ import { CompanyList } from "../components/CompanyList";
 import { UserCheck, Building, BarChart2, PieChart as PieIcon } from "lucide-react";
 import { useClientsStore } from "../stores/useClientsStore";
 import { motion, AnimatePresence } from "framer-motion";
+import { Card } from "@/components/ui/card";
 import {
   ResponsiveContainer,
   BarChart,
@@ -65,7 +66,7 @@ export default function ClientsPage() {
         className="grid grid-cols-1 lg:grid-cols-2 gap-6"
       >
         {/* Industry Distribution Chart (BarChart) */}
-        <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-5 shadow-sm flex flex-col h-[280px]">
+        <Card className="p-5 flex flex-col h-[280px]">
           <div className="flex items-center gap-2 mb-4">
             <BarChart2 className="h-4.5 w-4.5 text-primary" />
             <h3 className="text-sm font-semibold text-foreground">Phân bổ Doanh nghiệp theo Ngành nghề</h3>
@@ -87,10 +88,10 @@ export default function ClientsPage() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </Card>
 
         {/* Lead Sources Chart (PieChart) */}
-        <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-5 shadow-sm flex flex-col h-[280px]">
+        <Card className="p-5 flex flex-col h-[280px]">
           <div className="flex items-center gap-2 mb-4">
             <PieIcon className="h-4.5 w-4.5 text-accent" />
             <h3 className="text-sm font-semibold text-foreground">Nguồn tiếp cận Khách hàng (Leads)</h3>
@@ -128,7 +129,7 @@ export default function ClientsPage() {
               ))}
             </div>
           </div>
-        </div>
+        </Card>
       </motion.div>
 
       {/* Modern Premium Tabs Header */}

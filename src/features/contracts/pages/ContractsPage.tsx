@@ -3,6 +3,7 @@ import { ContractList } from "../components/ContractList";
 import { FileText, ShieldAlert, BadgeDollarSign, CalendarDays } from "lucide-react";
 import { useContractsStore } from "../stores/useContractsStore";
 import { motion } from "framer-motion";
+import { Card } from "@/components/ui/card";
 
 export default function ContractsPage() {
   const contracts = useContractsStore((state) => state.contracts);
@@ -68,7 +69,7 @@ export default function ContractsPage() {
         {summaryCards.map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-5 shadow-sm flex items-center justify-between">
+            <Card key={card.label} className="p-5 flex items-center justify-between">
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{card.label}</p>
                 <h3 className="text-xl font-bold text-foreground mt-1">{card.value}</h3>
@@ -77,7 +78,7 @@ export default function ContractsPage() {
               <div className={`p-3 rounded-lg border ${card.color} shrink-0 ml-3`}>
                 <Icon className="h-4.5 w-4.5" />
               </div>
-            </div>
+            </Card>
           );
         })}
       </motion.div>

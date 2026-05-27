@@ -1,6 +1,6 @@
 # Kỹ năng và Tiêu chuẩn code (Skill) cho pmh_v2
 
-File này định nghĩa các quy tắc lập trình, best practices và tiêu chuẩn mà mọi code trong dự án `pmh_v2` phải tuân thủ. Các Agent khi sinh code phải đọc kỹ file này.
+File này định nghĩa các quy tắc lập trình, best practices và tiêu chuẩn mà mọi code trong dự án `pmh_v2` phải tuân thủ. Các Agent khi sinh code phải đọc kỹ file này và quy chuẩn chung tại [rule.md](./rule.md).
 
 ## 1. Công nghệ cốt lõi
 - **Framework**: React 18+ với Vite.
@@ -88,6 +88,7 @@ src/api/
   - tách schemas
   - tách constants
   - tách sub-components
+- **Bắt buộc tái sử dụng Component**: Toàn bộ các trường nhập liệu (inputs), dropdowns, buttons, modals, cards, alerts,... đều PHẢI viết thành các component hoặc sử dụng lại từ các component dùng chung (`src/components/ui/` hoặc `src/components/shared/`). Tuyệt đối không tự viết thẻ HTML thô kèm Tailwind lặp đi lặp lại. Chi tiết xem tại [step-13-componentization-standards.md](./step-13-componentization-standards.md).
 
 Ưu tiên:
 - composition
@@ -291,7 +292,7 @@ Dự án V2 thực hiện viết lại/refactor toàn bộ hệ thống cũ (`pm
 3. **Định nghĩa Schema**: Viết Zod Schema cho các Form thêm mới/chỉnh sửa dựa trên API Model.
 4. **Xây dựng Trang danh sách (List Page)**: Tạo layout sử dụng `<PageHeader>`, `<DataTable>`, cấu hình columns và đồng bộ filters lên URL.
 5. **Xây dựng Trang chi tiết/Form**: Tạo form sử dụng React Hook Form + shadcn/ui.
-6. **Cấu hình định tuyến**: Đăng ký trang vào [src/routes/index.tsx](file:///Users/vietj/Develops/pmh/pmh_v2/src/routes/index.tsx).
+6. **Cấu hình định tuyến**: Đăng ký trang vào [src/routes/index.tsx](../src/routes/index.tsx).
 
 ## 26. Golden Rules
 

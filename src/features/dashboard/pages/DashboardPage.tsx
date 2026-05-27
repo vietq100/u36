@@ -15,6 +15,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { usePropertiesStore } from "@/features/properties/stores/usePropertiesStore";
 import { useClientsStore } from "@/features/clients/stores/useClientsStore";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -141,13 +143,13 @@ export default function DashboardPage() {
           <p className="text-muted-foreground mt-1 text-sm">Chào mừng trở lại! Dưới đây là phân tích hoạt động kinh doanh leasing hôm nay.</p>
         </div>
         <div className="flex gap-2">
-          <button 
+          <Button 
             onClick={() => navigate("/contracts")}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/95 transition-all shadow-sm"
+            size="sm"
           >
             <Plus className="h-4 w-4" />
             Tạo hợp đồng
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -161,23 +163,27 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: i * 0.05 }}
-              onClick={() => navigate(card.link)}
-              className="group relative cursor-pointer overflow-hidden rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:border-primary/20"
+              className="flex"
             >
-              <div className="flex justify-between items-start">
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{card.title}</p>
-                  <h3 className="text-3xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors">{card.value}</h3>
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    {card.desc}
-                  </p>
+              <Card
+                onClick={() => navigate(card.link)}
+                className="w-full cursor-pointer p-6 hover:border-primary/20 transition-all duration-300 relative group overflow-hidden flex flex-col justify-between"
+              >
+                <div className="flex justify-between items-start w-full">
+                  <div className="space-y-2 flex-1 min-w-0">
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{card.title}</p>
+                    <h3 className="text-3xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors">{card.value}</h3>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                      <span className="truncate">{card.desc}</span>
+                    </p>
+                  </div>
+                  <div className={`p-3 rounded-lg bg-gradient-to-br ${card.color} shrink-0 ml-3`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
                 </div>
-                <div className={`p-3 rounded-lg bg-gradient-to-br ${card.color}`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Card>
             </motion.div>
           );
         })}
@@ -186,7 +192,7 @@ export default function DashboardPage() {
       {/* Recharts Visualizations Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Trend Chart */}
-        <div className="lg:col-span-2 rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-5 shadow-md flex flex-col h-[340px]">
+        <Card className="lg:col-span-2 p-5 flex flex-col h-[340px]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4.5 w-4.5 text-primary" />
@@ -222,10 +228,10 @@ export default function DashboardPage() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </Card>
 
         {/* Project Occupancy Rates */}
-        <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-5 shadow-md flex flex-col h-[340px]">
+        <Card className="p-5 flex flex-col h-[340px]">
           <div className="flex items-center gap-2 mb-4">
             <Percent className="h-4.5 w-4.5 text-accent" />
             <h3 className="text-sm font-semibold text-foreground">Tỷ lệ lấp đầy theo Dự án</h3>
@@ -252,13 +258,13 @@ export default function DashboardPage() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Quick Actions & Recent Info */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Actions */}
-        <div className="rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-5 shadow-md">
+        <Card className="p-5">
           <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
             <ShieldCheck className="h-4.5 w-4.5 text-primary" />
             Phím tắt tác vụ nhanh
@@ -284,10 +290,10 @@ export default function DashboardPage() {
               );
             })}
           </div>
-        </div>
+        </Card>
 
         {/* Expiring Leases Overview */}
-        <div className="lg:col-span-2 rounded-xl border border-border/40 bg-card/60 backdrop-blur-md p-5 shadow-md flex flex-col justify-between">
+        <Card className="lg:col-span-2 p-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -329,14 +335,15 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="pt-4 border-t border-border/40 text-center">
-            <button 
+            <Button 
+              variant="link"
               onClick={() => navigate("/properties")} 
-              className="text-xs text-primary hover:text-primary/80 font-semibold hover:underline"
+              className="text-xs text-primary hover:text-primary/80 font-semibold p-0 h-auto"
             >
               Xem chi tiết mặt bằng căn hộ &rarr;
-            </button>
+            </Button>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
