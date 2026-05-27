@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useAppStore } from "@/stores/useAppStore";
 import { useAuthStore } from "@/features/auth/stores/useAuthStore";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,8 @@ import {
   Bell, 
   Settings, 
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  KeyRound
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -33,15 +35,57 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { ProfileModal } from "./ProfileModal";
+import { ChangePasswordModal } from "./ChangePasswordModal";
+import { useGetApiServicesAppProfileGetProfilePicture } from "@/api/generated/profile/profile";
+import { useGetApiServicesAppSessionGetCurrentLoginInformations } from "@/api/generated/session/session";
 
 export function Header() {
   const navigate = useNavigate();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const toggleSidebar = useAppStore((state) => state.toggleSidebar);
   const theme = useAppStore((state) => state.theme);
   const setTheme = useAppStore((state) => state.setTheme);
   
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
+  const { data: pictureData } = useGetApiServicesAppProfileGetProfilePicture({
+    query: {
+      enabled: !!user,
+    },
+  });
+
+  const { data: sessionData } = useGetApiServicesAppSessionGetCurrentLoginInformations({
+    query: {
+      enabled: !!user,
+    },
+  });
+
+  const getAvatarSrc = () => {
+    const rawPic = pictureData as any;
+    const pic =
+      rawPic?.profilePicture ||
+      rawPic?.result?.profilePicture ||
+      rawPic?.data?.profilePicture ||
+      rawPic?.data?.result?.profilePicture;
+    if (!pic) return "";
+    if (pic.startsWith("data:") || pic.startsWith("http")) return pic;
+    return `data:image/jpeg;base64,${pic}`;
+  };
+
+  const avatarUrl = getAvatarSrc();
+
+  const rawSession = sessionData as any;
+  const userData =
+    rawSession?.user ||
+    rawSession?.result?.user ||
+    rawSession?.data?.user ||
+    rawSession?.data?.result?.user;
+
+  const displayName = userData?.displayName || user?.email || "";
+
+  const initials = displayName.substring(0, 2).toUpperCase() || "US";
 
   const getThemeIcon = () => {
     switch (theme) {
@@ -188,12 +232,16 @@ export function Header() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2.5 p-1 rounded-full border border-border/40 bg-muted/10 hover:bg-accent/10 transition-all cursor-pointer text-left focus-visible:outline-none">
-                {/* Custom Avatar with initials */}
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary border border-primary/20 shadow-inner font-bold text-xs shrink-0">
-                  {user.email.substring(0, 2).toUpperCase()}
+                {/* Custom Avatar with initials or profile picture */}
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary border border-primary/20 shadow-inner font-bold text-xs shrink-0 overflow-hidden">
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="Avatar" className="h-full w-full object-cover" />
+                  ) : (
+                    initials
+                  )}
                 </div>
                 <div className="hidden flex-col text-left md:flex pr-1.5">
-                  <span className="font-semibold text-foreground text-[11px] leading-tight max-w-[100px] truncate">{user.email}</span>
+                  <span className="font-semibold text-foreground text-[11px] leading-tight max-w-[100px] truncate">{displayName}</span>
                   <span className="text-[9px] text-muted-foreground font-medium uppercase tracking-wider leading-none mt-0.5">
                     {user.roles[0]}
                   </span>
@@ -205,7 +253,7 @@ export function Header() {
               <DropdownMenuLabel className="font-normal flex flex-col gap-0.5 p-3">
                 <div className="flex items-center gap-1">
                   <Sparkles className="h-3.5 w-3.5 text-accent animate-pulse" />
-                  <span className="font-bold text-foreground text-xs">Phú Mỹ Hưng Leasing</span>
+                  <span className="font-bold text-foreground text-xs">{displayName}</span>
                 </div>
                 <span className="text-[10px] text-muted-foreground mt-1 truncate">{user.email}</span>
                 <span className="text-[9px] text-primary font-bold uppercase tracking-wider mt-0.5">
@@ -215,9 +263,13 @@ export function Header() {
               <DropdownMenuSeparator />
               
               <DropdownMenuGroup>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem onClick={() => setIsProfileOpen(true)} className="cursor-pointer">
                   <User className="h-4 w-4 mr-2" />
                   <span>Hồ sơ cá nhân</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setIsChangePasswordOpen(true)} className="cursor-pointer">
+                  <KeyRound className="h-4 w-4 mr-2" />
+                  <span>Đổi mật khẩu</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
                   <Settings className="h-4 w-4 mr-2" />
@@ -270,6 +322,8 @@ export function Header() {
           </DropdownMenu>
         )}
       </div>
+      <ProfileModal open={isProfileOpen} onOpenChange={setIsProfileOpen} />
+      <ChangePasswordModal open={isChangePasswordOpen} onOpenChange={setIsChangePasswordOpen} />
     </header>
   );
 }

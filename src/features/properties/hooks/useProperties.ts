@@ -1,7 +1,5 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "@/features/auth/stores/useAuthStore";
-import { usePropertiesStore } from "../stores/usePropertiesStore";
-import type { Project, Unit, ProjectFormValues, UnitFormValues } from "../types";
+import { useQueryClient } from "@tanstack/react-query";
+import type { Project, Unit } from "../types";
 
 // Import Orval generated hooks
 import { 
@@ -42,12 +40,6 @@ const mapUnitDto = (dto: any): Unit => ({
   isActive: dto.isActive !== false,
 });
 
-// Helper to determine if we are in demo mode
-const checkDemoMode = () => {
-  const token = useAuthStore.getState().token;
-  return !token || token === "fake-jwt-token";
-};
-
 // 1. Hook to get Projects
 export function useGetProjects(params: {
   Keyword?: string;
@@ -55,39 +47,6 @@ export function useGetProjects(params: {
   SkipCount: number;
   MaxResultCount: number;
 }) {
-  const isDemo = checkDemoMode();
-  const storeProjects = usePropertiesStore((state) => state.projects);
-
-  if (isDemo) {
-    // Filter locally in store
-    let filtered = [...storeProjects];
-    if (params.Keyword) {
-      const kw = params.Keyword.toLowerCase();
-      filtered = filtered.filter(
-        (p) =>
-          p.projectName.toLowerCase().includes(kw) ||
-          p.projectCode.toLowerCase().includes(kw)
-      );
-    }
-    if (params.IsActive !== undefined) {
-      filtered = filtered.filter((p) => p.isActive === params.IsActive);
-    }
-
-    const totalCount = filtered.length;
-    const paginated = filtered.slice(params.SkipCount, params.SkipCount + params.MaxResultCount);
-
-    return {
-      data: {
-        items: paginated,
-        totalCount,
-      },
-      isLoading: false,
-      isSuccess: true,
-      refetch: () => {},
-    };
-  }
-
-  // Use real backend hook
   const query = useGetApiServicesAppProjectGetAll({
     Keyword: params.Keyword,
     IsActive: params.IsActive,
@@ -112,37 +71,6 @@ export function useGetUnits(params: {
   SkipCount: number;
   MaxResultCount: number;
 }) {
-  const isDemo = checkDemoMode();
-  const storeUnits = usePropertiesStore((state) => state.units);
-
-  if (isDemo) {
-    let filtered = [...storeUnits];
-    if (params.Keyword) {
-      const kw = params.Keyword.toLowerCase();
-      filtered = filtered.filter((u) => u.unitName.toLowerCase().includes(kw));
-    }
-    if (params.ProjectId) {
-      filtered = filtered.filter((u) => u.projectId === params.ProjectId);
-    }
-    if (params.UnitStatusId) {
-      filtered = filtered.filter((u) => u.statusId === params.UnitStatusId);
-    }
-
-    const totalCount = filtered.length;
-    const paginated = filtered.slice(params.SkipCount, params.SkipCount + params.MaxResultCount);
-
-    return {
-      data: {
-        items: paginated,
-        totalCount,
-      },
-      isLoading: false,
-      isSuccess: true,
-      refetch: () => {},
-    };
-  }
-
-  // Use real backend hook
   const query = useGetApiServicesAppUnitGetAll({
     Keyword: params.Keyword,
     ProjectId: params.ProjectId,
@@ -162,10 +90,7 @@ export function useGetUnits(params: {
 
 // 3. Create or Update Project Mutation
 export function useCreateOrUpdateProject(options?: { onSuccess?: () => void }) {
-  const isDemo = checkDemoMode();
   const queryClient = useQueryClient();
-  const addProject = usePropertiesStore((state) => state.addProject);
-  const updateProject = usePropertiesStore((state) => state.updateProject);
 
   const realMutation = usePostApiServicesAppProjectCreateOrUpdate({
     mutation: {
@@ -176,31 +101,12 @@ export function useCreateOrUpdateProject(options?: { onSuccess?: () => void }) {
     },
   });
 
-  // Mock mutation for demo mode
-  const mockMutation = useMutation({
-    mutationFn: async (variables: { id?: number; data: ProjectFormValues }) => {
-      // simulate delay
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      if (variables.id) {
-        updateProject(variables.id, variables.data);
-      } else {
-        addProject(variables.data);
-      }
-      return {};
-    },
-    onSuccess: () => {
-      options?.onSuccess?.();
-    },
-  });
-
-  return isDemo ? mockMutation : (realMutation as any);
+  return realMutation as any;
 }
 
 // 4. Toggle Project Active Status
 export function useToggleProjectActive(options?: { onSuccess?: () => void }) {
-  const isDemo = checkDemoMode();
   const queryClient = useQueryClient();
-  const toggleProject = usePropertiesStore((state) => state.toggleProjectActive);
 
   const realMutation = usePostApiServicesAppProjectActive({
     mutation: {
@@ -211,26 +117,12 @@ export function useToggleProjectActive(options?: { onSuccess?: () => void }) {
     },
   });
 
-  const mockMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      toggleProject(id);
-      return {};
-    },
-    onSuccess: () => {
-      options?.onSuccess?.();
-    },
-  });
-
-  return isDemo ? mockMutation : (realMutation as any);
+  return realMutation as any;
 }
 
 // 5. Create or Update Unit Mutation
 export function useCreateOrUpdateUnit(options?: { onSuccess?: () => void }) {
-  const isDemo = checkDemoMode();
   const queryClient = useQueryClient();
-  const addUnit = usePropertiesStore((state) => state.addUnit);
-  const updateUnit = usePropertiesStore((state) => state.updateUnit);
 
   const realMutation = usePostApiServicesAppUnitCreateOrUpdate({
     mutation: {
@@ -241,29 +133,12 @@ export function useCreateOrUpdateUnit(options?: { onSuccess?: () => void }) {
     },
   });
 
-  const mockMutation = useMutation({
-    mutationFn: async (variables: { id?: number; data: UnitFormValues }) => {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      if (variables.id) {
-        updateUnit(variables.id, variables.data);
-      } else {
-        addUnit(variables.data);
-      }
-      return {};
-    },
-    onSuccess: () => {
-      options?.onSuccess?.();
-    },
-  });
-
-  return isDemo ? mockMutation : (realMutation as any);
+  return realMutation as any;
 }
 
 // 6. Toggle Unit Active Status
 export function useToggleUnitActive(options?: { onSuccess?: () => void }) {
-  const isDemo = checkDemoMode();
   const queryClient = useQueryClient();
-  const toggleUnit = usePropertiesStore((state) => state.toggleUnitActive);
 
   const realMutation = usePostApiServicesAppUnitActive({
     mutation: {
@@ -274,16 +149,5 @@ export function useToggleUnitActive(options?: { onSuccess?: () => void }) {
     },
   });
 
-  const mockMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      toggleUnit(id);
-      return {};
-    },
-    onSuccess: () => {
-      options?.onSuccess?.();
-    },
-  });
-
-  return isDemo ? mockMutation : (realMutation as any);
+  return realMutation as any;
 }

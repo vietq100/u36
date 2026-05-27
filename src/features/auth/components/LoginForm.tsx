@@ -58,12 +58,6 @@ export function LoginForm() {
     );
   };
 
-  const handleDemoLogin = () => {
-    toast.success("Demo login successful!");
-    setAuth({ id: "demo-id", email: "admin@example.com", roles: ["ADMIN"] }, "fake-jwt-token");
-    navigate("/");
-  };
-
   return (
     <div className="w-full rounded-[24px] border border-white/20 bg-white/10 p-8 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] text-white">
       <div className="mb-8 text-center">
@@ -138,23 +132,13 @@ export function LoginForm() {
             </a>
           </div>
           
-          <div className="pt-4 space-y-3">
+          <div className="pt-4">
             <Button 
               type="submit" 
               className="h-[52px] w-full rounded-xl bg-white text-base font-bold text-black hover:bg-white/90 transition-all shadow-lg hover:shadow-xl" 
               disabled={authMutation.isPending}
             >
               {authMutation.isPending ? "Logging in..." : "Login"}
-            </Button>
-
-            <Button 
-              type="button" 
-              variant="ghost"
-              onClick={handleDemoLogin}
-              className="h-10 w-full text-white/60 hover:bg-white/10 hover:text-white transition-colors" 
-              disabled={authMutation.isPending}
-            >
-              Run Demo Mode
             </Button>
           </div>
         </form>
