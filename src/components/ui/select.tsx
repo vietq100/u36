@@ -132,7 +132,7 @@ const SelectTrigger = React.forwardRef<
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex h-8 w-full items-center justify-between gap-1.5 rounded-xl border border-border bg-input py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-1 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground transition-all duration-200 text-left",
+        "flex h-8 w-full items-center justify-between gap-1.5 rounded-input border border-border bg-input py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-1 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground transition-all duration-200 text-left",
         className
       )}
       {...props}
@@ -185,7 +185,7 @@ const SelectContent = React.forwardRef<
         ref={ref}
         data-slot="select-content"
         className={cn(
-          "relative z-50 max-h-60 w-[var(--radix-popover-trigger-width)] min-w-36 overflow-x-hidden overflow-y-auto rounded-xl border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl p-1 text-popover-foreground shadow-2xl outline-none duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "relative z-50 max-h-60 w-[var(--radix-popover-trigger-width)] min-w-36 overflow-x-hidden overflow-y-auto rounded-popover border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl p-1 text-popover-foreground shadow-2xl outline-none duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className
         )}
         align="start"
@@ -269,7 +269,7 @@ const SelectItem = React.forwardRef<
         setOpen(false)
       }}
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-lg px-2 py-1.5 text-xs outline-none transition-all hover:bg-primary/10 hover:text-primary data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 text-foreground text-left",
+        "relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-all hover:bg-primary/10 hover:text-primary data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 text-foreground text-left",
         isSelected && "bg-primary/10 text-primary font-semibold",
         className
       )}

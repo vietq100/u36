@@ -264,7 +264,7 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
                   <Input
                     value={currentUserName}
                     disabled
-                    className="bg-muted/50 text-muted-foreground select-none cursor-not-allowed border-dashed h-10 rounded-xl"
+                    className="bg-muted/50 text-muted-foreground select-none cursor-not-allowed border-dashed h-10 rounded-input"
                   />
                 </FormControl>
               </FormItem>
@@ -275,7 +275,7 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
                 name="displayName"
                 label="Họ và Tên"
                 placeholder="Nhập họ và tên..."
-                className="h-10 rounded-xl"
+                className="h-10 rounded-input"
                 required
                 disabled={isPending}
               />
@@ -287,7 +287,7 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
                 label="Địa chỉ Email"
                 placeholder="email@example.com"
                 type="email"
-                className="h-10 rounded-xl"
+                className="h-10 rounded-input"
                 required
                 disabled={isPending}
               />
@@ -298,7 +298,7 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
                 name="phoneNumber"
                 label="Số điện thoại"
                 placeholder="Nhập số điện thoại..."
-                className="h-10 rounded-xl"
+                className="h-10 rounded-input"
                 required
                 disabled={isPending}
               />

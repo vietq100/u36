@@ -434,7 +434,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
           <form id="project-form" onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-6">
                 
                 {/* 1. Basic Info Section */}
-                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                   <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                     <Building className="h-4 w-4" />
                     <span>Thông tin cơ bản</span>
@@ -528,7 +528,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
                 </div>
 
                 {/* 2. Project Address Section */}
-                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                   <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                     <MapPin className="h-4 w-4" />
                     <span>Địa chỉ dự án</span>
@@ -565,7 +565,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
                 </div>
 
                 {/* 3. Lessor Information Section */}
-                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                   <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                     <Landmark className="h-4 w-4" />
                     <span>Thông tin bên cho thuê (Lessor Information)</span>
@@ -603,7 +603,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
                 </div>
 
                 {/* 4. Lessor's Representative Section */}
-                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                   <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                     <ShieldCheck className="h-4 w-4" />
                     <span>Thông tin Người đại diện ủy quyền</span>
@@ -629,7 +629,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
                 </div>
 
                 {/* 5. Bank Accounts Section */}
-                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                   <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                     <DollarSign className="h-4 w-4" />
                     <span>Thông tin tài khoản Ngân hàng</span>
@@ -664,7 +664,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
                 </div>
 
                 {/* 6. Managing Agent Info Section */}
-                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                   <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                     <FileText className="h-4 w-4" />
                     <span>Thông tin Đơn vị đại lý quản lý (Managing Agent)</span>

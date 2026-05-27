@@ -70,7 +70,7 @@ export function DetailSheet({
                   variant="outline"
                   onClick={handleCancel}
                   disabled={isPending}
-                  className="h-9 px-4 rounded-xl border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                  className="h-9 px-4 rounded-button border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
                 >
                   {cancelLabel}
                 </Button>
@@ -81,7 +81,7 @@ export function DetailSheet({
                   form={formId}
                   onClick={formId ? undefined : onSave}
                   disabled={isPending}
-                  className="h-9 px-5 rounded-xl bg-primary text-primary-foreground font-semibold hover:opacity-90 shadow-sm transition-all"
+                  className="h-9 px-5 rounded-button bg-primary text-primary-foreground font-semibold hover:opacity-90 shadow-sm transition-all"
                 >
                   {isPending ? "Đang lưu..." : saveLabel}
                 </Button>

@@ -134,7 +134,7 @@ export function Header() {
           <input
             type="text"
             placeholder="Tìm kiếm dự án, khách hàng... ⌘K"
-            className="h-8 w-full rounded-xl border border-border/60 bg-muted/20 dark:bg-white/5 pl-9 pr-4 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:bg-card/85 transition-all duration-300"
+            className="h-8 w-full rounded-input border border-border/60 bg-muted/20 dark:bg-white/5 pl-9 pr-4 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent focus-visible:bg-card/85 transition-all duration-300"
           />
         </form>
       </div>

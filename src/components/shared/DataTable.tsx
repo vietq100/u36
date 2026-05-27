@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4 relative">
-      <div className="rounded-2xl border border-border/50 dark:border-white/10 bg-card/40 dark:bg-white/3 backdrop-blur-md relative min-h-[300px] overflow-hidden shadow-md">
+      <div className="rounded-table border border-border/50 dark:border-white/10 bg-card/40 dark:bg-white/3 backdrop-blur-md relative min-h-[300px] overflow-hidden shadow-md">
         {isLoading && <LoadingOverlay />}
         
         <Table>

@@ -141,7 +141,7 @@ export function ProjectFloorsTab({ projectId }: ProjectFloorsTabProps) {
         </Button>
       </div>
 
-      <div className="border border-border/40 rounded-xl overflow-hidden bg-card/25 backdrop-blur-md">
+      <div className="border border-border/40 rounded-table overflow-hidden bg-card/25 backdrop-blur-md">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">

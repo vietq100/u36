@@ -61,7 +61,7 @@ export function ActionModal({
         showCloseButton={true}
         overlayClassName="bg-black/30 dark:bg-black/30 backdrop-blur-none"
         className={cn(
-          "flex flex-col bg-popover backdrop-blur-2xl border border-border w-full p-6 rounded-2xl shadow-2xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)] outline-none gap-4",
+          "flex flex-col bg-popover backdrop-blur-2xl border border-border w-full p-6 rounded-dialog shadow-2xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)] outline-none gap-4",
           maxWidthClasses[maxWidth],
           className
         )}
@@ -78,14 +78,14 @@ export function ActionModal({
 
         {/* Modal Footer */}
         {(showCancel || showSave) && (
-          <DialogFooter className="pt-2 border-t border-border/40 dark:border-white/10 -mx-6 -mb-6 p-6 mt-2 bg-muted/20 dark:bg-white/1 rounded-b-2xl">
+          <DialogFooter className="pt-2 border-t border-border/40 dark:border-white/10 -mx-6 -mb-6 p-6 mt-2 bg-muted/20 dark:bg-white/1 rounded-b-dialog">
             {showCancel && (
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleCancel}
                 disabled={isPending}
-                className="h-9 px-4 rounded-xl border-border/50 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                className="h-9 px-4 rounded-button border-border/50 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
               >
                 {cancelLabel}
               </Button>
@@ -96,7 +96,7 @@ export function ActionModal({
                 form={formId}
                 onClick={formId ? undefined : onSave}
                 disabled={isPending}
-                className="h-9 px-5 rounded-xl bg-primary text-sm text-primary-foreground font-semibold hover:opacity-90 shadow-sm transition-all"
+                className="h-9 px-5 rounded-button bg-primary text-sm text-primary-foreground font-semibold hover:opacity-90 shadow-sm transition-all"
               >
                 {isPending ? "Đang xử lý..." : saveLabel}
               </Button>

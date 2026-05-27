@@ -50,7 +50,7 @@ export function DetailDialog({
         showCloseButton={false}
         overlayClassName="bg-black/30 dark:bg-black/30 backdrop-blur-none"
         className={cn(
-          "flex flex-col bg-popover backdrop-blur-2xl border border-border w-full sm:max-w-[540px] p-6 rounded-2xl shadow-2xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)] outline-none gap-4",
+          "flex flex-col bg-popover backdrop-blur-2xl border border-border w-full sm:max-w-[540px] p-6 rounded-dialog shadow-2xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.7)] outline-none gap-4",
           className
         )}
       >
@@ -69,7 +69,7 @@ export function DetailDialog({
                   variant="outline"
                   onClick={handleCancel}
                   disabled={isPending}
-                  className="h-8 px-3 rounded-lg border-border/50 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                  className="h-8 px-3 rounded-button border-border/50 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
                 >
                   {cancelLabel}
                 </Button>
@@ -80,7 +80,7 @@ export function DetailDialog({
                   form={formId}
                   onClick={formId ? undefined : onSave}
                   disabled={isPending}
-                  className="h-8 px-4 rounded-lg bg-primary text-xs text-primary-foreground font-semibold hover:opacity-90 shadow-sm transition-all"
+                  className="h-8 px-4 rounded-button bg-primary text-xs text-primary-foreground font-semibold hover:opacity-90 shadow-sm transition-all"
                 >
                   {isPending ? "Đang lưu..." : saveLabel}
                 </Button>

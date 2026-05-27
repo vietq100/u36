@@ -69,7 +69,7 @@ export function FileUploader({
       <div
         {...getRootProps()}
         className={cn(
-          "relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-input px-6 py-6 text-center cursor-pointer transition-all hover:bg-muted/10 hover:border-ring focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
+          "relative flex flex-col items-center justify-center rounded-input border-2 border-dashed border-border bg-input px-6 py-6 text-center cursor-pointer transition-all hover:bg-muted/10 hover:border-ring focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
           isDragActive && "border-primary bg-primary/5",
           disabled && "opacity-50 cursor-not-allowed pointer-events-none"
         )}
@@ -88,7 +88,7 @@ export function FileUploader({
                 />
               </div>
             ) : (
-              <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className="flex h-14 w-14 items-center justify-center rounded-input bg-primary/10 text-primary">
                 <FileIcon className="h-7 w-7" />
               </div>
             )}

@@ -64,6 +64,11 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-input: var(--radius-input);
+  --radius-button: var(--radius-button);
+  --radius-table: var(--radius-table);
+  --radius-dialog: var(--radius-dialog);
+  --radius-popover: var(--radius-popover);
 }
 
 :root {
@@ -71,7 +76,7 @@
   --foreground: oklch(17.589% 0.02709 314.028);
   --card: rgba(255, 255, 255, 0.4);
   --card-foreground: oklch(0.2 0.02 165);
-  --popover: rgba(255, 255, 255, 0.6);
+  --popover: rgba(255, 255, 255, 0.902);
   --popover-foreground: oklch(0.2 0.02 165);
   --primary: oklch(0.38 0.09 165);
   --primary-foreground: oklch(0.99 0.002 165);
@@ -87,6 +92,11 @@
   --input: rgba(0, 0, 0, 0.04);
   --ring: oklch(0.38 0.09 165);
   --radius: 0.75rem;
+  --radius-input: calc(var(--radius) * 0.8);
+  --radius-button: calc(var(--radius) * 0.8);
+  --radius-table: var(--radius);
+  --radius-dialog: var(--radius);
+  --radius-popover: var(--radius);
 }
 
 .dark {

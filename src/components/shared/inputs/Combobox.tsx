@@ -55,7 +55,7 @@ export function Combobox({
         disabled={disabled}
         onClick={() => setOpen(!open)}
         className={cn(
-          "flex h-8 w-full items-center justify-between rounded-xl border border-border bg-input px-2.5 py-1 text-sm transition-all outline-none focus:border-ring focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-foreground text-left transition-all duration-200",
+          "flex h-8 w-full items-center justify-between rounded-input border border-border bg-input px-2.5 py-1 text-sm transition-all outline-none focus:border-ring focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-foreground text-left transition-all duration-200",
           !selectedOption && "text-muted-foreground"
         )}
       >
@@ -67,7 +67,7 @@ export function Combobox({
 
       {/* Popover Content */}
       {open && (
-        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-xl border border-border bg-popover/95 backdrop-blur-md p-1 shadow-md outline-none animate-in fade-in-0 zoom-in-95">
+        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-popover border border-border bg-popover/95 backdrop-blur-md p-1 shadow-md outline-none animate-in fade-in-0 zoom-in-95">
           {/* Search Input */}
           <div className="flex items-center border-b border-border px-2.5 pb-1">
             <Search className="mr-2 h-4 w-4 shrink-0 opacity-50 text-muted-foreground" />
@@ -98,7 +98,7 @@ export function Combobox({
                       setSearch("");
                     }}
                     className={cn(
-                      "relative flex w-full cursor-default select-none items-center rounded-lg px-2.5 py-1.5 text-sm outline-none transition-colors hover:bg-primary/10 hover:text-primary text-foreground text-left",
+                      "relative flex w-full cursor-default select-none items-center rounded-sm px-2.5 py-1.5 text-sm outline-none transition-colors hover:bg-primary/10 hover:text-primary text-foreground text-left",
                       isSelected && "bg-primary/5 text-primary font-semibold"
                     )}
                   >

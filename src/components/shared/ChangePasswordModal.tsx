@@ -99,7 +99,7 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
                     <Input
                       type={showCurrent ? "text" : "password"}
                       placeholder="Nhập mật khẩu hiện tại..."
-                      className="h-10 rounded-xl pr-10"
+                      className="h-10 rounded-input pr-10"
                       disabled={isPending}
                       {...field}
                     />
@@ -129,7 +129,7 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
                     <Input
                       type={showNew ? "text" : "password"}
                       placeholder="Mật khẩu mới (ít nhất 6 ký tự)..."
-                      className="h-10 rounded-xl pr-10"
+                      className="h-10 rounded-input pr-10"
                       disabled={isPending}
                       {...field}
                     />
@@ -159,7 +159,7 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
                     <Input
                       type={showConfirm ? "text" : "password"}
                       placeholder="Xác nhận lại mật khẩu mới..."
-                      className="h-10 rounded-xl pr-10"
+                      className="h-10 rounded-input pr-10"
                       disabled={isPending}
                       {...field}
                     />

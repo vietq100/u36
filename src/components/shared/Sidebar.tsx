@@ -74,7 +74,7 @@ export function Sidebar() {
                 }}
                 className={({ isActive }) =>
                   cn(
-                    "group relative flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-300",
+                    "group relative flex items-center gap-3 rounded-md px-3.5 py-2.5 text-sm font-medium transition-all duration-300",
                     isActive
                       ? "bg-primary/10 dark:bg-white/8 text-foreground font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.1)] pl-4"
                       : "text-muted-foreground hover:bg-muted/50 dark:hover:bg-white/5 hover:text-foreground hover:translate-x-1 pl-3"

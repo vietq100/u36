@@ -241,7 +241,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
                 {/* Cột trái: Thông tin cốt lõi (3/5 chiều rộng) */}
                 <div className="lg:col-span-3 space-y-6">
                   {/* 1. Basic Specifications Section */}
-                  <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                  <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                     <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                       <LayoutGrid className="h-4 w-4" />
                       <span>Thông số kỹ thuật & Vị trí</span>
@@ -319,7 +319,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
                   </div>
 
                   {/* 2. Rent Section */}
-                  <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                  <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                     <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                       <DollarSign className="h-4 w-4" />
                       <span>Giá thuê (USD/tháng)</span>
@@ -335,7 +335,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
                 {/* Cột phải: Đặc trưng & Tiện ích (2/5 chiều rộng) */}
                 <div className="lg:col-span-2 space-y-6">
                   {/* 3. Orientation & View Section */}
-                  <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                  <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                     <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                       <Eye className="h-4 w-4" />
                       <span>Hướng & View cảnh quan</span>
@@ -384,7 +384,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
 
                   {/* 4. Unit Facilities Section */}
                   {facilityOptions.length > 0 && (
-                    <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                    <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                       <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                         <ShieldCheck className="h-4 w-4" />
                         <span>Tiện ích đi kèm (Facilities)</span>
@@ -418,7 +418,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
                   )}
 
                   {/* 5. Description Section */}
-                  <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-2xl p-5 space-y-4 shadow-sm backdrop-blur-md">
+                  <div className="border border-border/30 bg-muted/10 dark:bg-white/1 rounded-dialog p-5 space-y-4 shadow-sm backdrop-blur-md">
                     <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-border/20 pb-2 mb-1">
                       <FileText className="h-4 w-4" />
                       <span>Ghi chú thêm</span>
