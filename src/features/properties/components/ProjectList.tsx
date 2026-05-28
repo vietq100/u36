@@ -1,13 +1,15 @@
 import { useState } from "react";
 import type { ColumnDef, PaginationState } from "@tanstack/react-table";
-import { Edit, Power, Search, Building2 } from "lucide-react";
+import { Edit, Power, Search, Building2, ShieldCheck, FilePlus2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DataTable } from "@/components/shared/DataTable";
-import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { Input } from "@/components/shared/inputs/Input";
+import { DataTable } from "@/components/shared/tables/DataTable";
+import { ConfirmDialog } from "@/components/shared/dialogs/ConfirmDialog";
 import { useGetProjects, useToggleProjectActive } from "../hooks/useProperties";
 import { ProjectForm } from "./ProjectForm";
+import { CreateProposalDialog } from "./CreateProposalDialog";
+import { AddUserPermissionDialog } from "./AddUserPermissionDialog";
 import type { Project } from "../types";
 
 export function ProjectList() {
@@ -22,6 +24,12 @@ export function ProjectList() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [confirmProject, setConfirmProject] = useState<Project | null>(null);
+  
+  // Permissions & Proposal states
+  const [initialTab, setInitialTab] = useState<any>("summary");
+  const [proposalProjectId, setProposalProjectId] = useState<number | null>(null);
+  const [proposalProjectName, setProposalProjectName] = useState<string>("");
+  const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
 
   // Fetch projects data
   const { data, isLoading, refetch } = useGetProjects({
@@ -108,6 +116,32 @@ export function ProjectList() {
               className="h-8 w-8 text-muted-foreground hover:text-primary"
               onClick={() => {
                 setSelectedProject(project);
+                setInitialTab("permissions");
+                setIsFormOpen(true);
+              }}
+              title="Phân quyền thành viên"
+            >
+              <ShieldCheck className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-primary"
+              onClick={() => {
+                setProposalProjectId(project.id);
+                setProposalProjectName(project.projectName);
+              }}
+              title="Tạo đề xuất"
+            >
+              <FilePlus2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-primary"
+              onClick={() => {
+                setSelectedProject(project);
+                setInitialTab("summary");
                 setIsFormOpen(true);
               }}
               title="Chỉnh sửa"
@@ -154,12 +188,18 @@ export function ProjectList() {
           </div>
         </form>
 
-        <Button onClick={() => {
-          setSelectedProject(null);
-          setIsFormOpen(true);
-        }}>
-          Thêm Dự án
-        </Button>
+        <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+          <Button variant="outline" onClick={() => setIsPermissionDialogOpen(true)}>
+            <ShieldCheck className="h-4 w-4 mr-2" /> Phân quyền nhanh
+          </Button>
+          <Button onClick={() => {
+            setSelectedProject(null);
+            setInitialTab("summary");
+            setIsFormOpen(true);
+          }}>
+            Thêm Dự án
+          </Button>
+        </div>
       </div>
 
       {/* Projects DataTable */}
@@ -177,6 +217,22 @@ export function ProjectList() {
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
         project={selectedProject}
+        onSuccess={refetch}
+        initialTab={initialTab}
+      />
+
+      {/* Create Proposal Dialog */}
+      <CreateProposalDialog
+        open={proposalProjectId !== null}
+        onOpenChange={(open) => !open && setProposalProjectId(null)}
+        projectId={proposalProjectId || 0}
+        projectName={proposalProjectName}
+      />
+
+      {/* Batch Permission Dialog */}
+      <AddUserPermissionDialog
+        open={isPermissionDialogOpen}
+        onOpenChange={setIsPermissionDialogOpen}
         onSuccess={refetch}
       />
 

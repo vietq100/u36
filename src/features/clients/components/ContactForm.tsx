@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
-import { FormCombobox } from "@/components/shared/forms/FormCombobox";
 import { FormSelect } from "@/components/shared/forms/FormSelect";
 import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor";
 import { useCreateOrUpdateContact } from "../hooks/useClients";
@@ -12,7 +11,7 @@ import { useClientsStore } from "../stores/useClientsStore";
 import { contactSchema } from "../types";
 import type { Contact, ContactFormValues } from "../types";
 import { FileUploader } from "@/components/shared/inputs/FileUploader";
-import { DetailDialog } from "@/components/shared/DetailDialog";
+import { DetailDialog } from "@/components/shared/dialogs/DetailDialog";
 interface ContactFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -106,7 +105,7 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
             />
 
             {/* Company Select Dropdown */}
-            <FormCombobox
+            <FormSelect
               control={form.control}
               name="companyId"
               label="Thuộc Doanh nghiệp (Nếu có)"

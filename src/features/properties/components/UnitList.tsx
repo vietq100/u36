@@ -3,22 +3,22 @@ import type { ColumnDef, PaginationState } from "@tanstack/react-table";
 import { Edit, Power, Search } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DataTable } from "@/components/shared/DataTable";
-import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { Input } from "@/components/shared/inputs/Input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/inputs/Select";
+import { DataTable } from "@/components/shared/tables/DataTable";
+import { ConfirmDialog } from "@/components/shared/dialogs/ConfirmDialog";
 import { useGetUnits, useToggleUnitActive } from "../hooks/useProperties";
 import { usePropertiesStore } from "../stores/usePropertiesStore";
 import { UnitForm } from "./UnitForm";
 import type { Unit } from "../types";
 
-export function UnitList() {
+export function UnitList({ projectId }: { projectId?: number }) {
   const projects = usePropertiesStore((state) => state.projects).filter(p => p.isActive);
   const statuses = usePropertiesStore((state) => state.statuses);
 
   // Filter & Page state
   const [keyword, setKeyword] = useState("");
-  const [selectedProjectId, setSelectedProjectId] = useState<number>(0);
+  const [selectedProjectId, setSelectedProjectId] = useState<number>(projectId || 0);
   const [selectedStatusId, setSelectedStatusId] = useState<number>(0);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -176,7 +176,7 @@ export function UnitList() {
 
   const clearFilters = () => {
     setKeyword("");
-    setSelectedProjectId(0);
+    setSelectedProjectId(projectId || 0);
     setSelectedStatusId(0);
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
   };
@@ -198,25 +198,27 @@ export function UnitList() {
           </form>
 
           {/* Project dropdown Filter */}
-          <Select
-            value={String(selectedProjectId)}
-            onValueChange={(val) => {
-              setSelectedProjectId(Number(val));
-              setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-            }}
-          >
-            <SelectTrigger className="w-full sm:w-[180px] h-10 bg-card text-foreground border-input">
-              <SelectValue placeholder="Tất cả dự án" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0">Tất cả dự án</SelectItem>
-              {projects.map((p) => (
-                <SelectItem key={p.id} value={String(p.id)}>
-                  {p.projectName}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {!projectId && (
+            <Select
+              value={String(selectedProjectId)}
+              onValueChange={(val) => {
+                setSelectedProjectId(Number(val));
+                setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+              }}
+            >
+              <SelectTrigger className="w-full sm:w-[180px] h-10 bg-card text-foreground border-input">
+                <SelectValue placeholder="Tất cả dự án" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">Tất cả dự án</SelectItem>
+                {projects.map((p) => (
+                  <SelectItem key={p.id} value={String(p.id)}>
+                    {p.projectName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
 
           {/* Status dropdown Filter */}
           <Select
@@ -240,7 +242,7 @@ export function UnitList() {
           </Select>
 
           {/* Reset Filters button */}
-          {(keyword || selectedProjectId !== 0 || selectedStatusId !== 0) && (
+          {(keyword || selectedProjectId !== (projectId || 0) || selectedStatusId !== 0) && (
             <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground h-10 text-xs">
               Xóa bộ lọc
             </Button>
@@ -271,6 +273,7 @@ export function UnitList() {
         onOpenChange={setIsFormOpen}
         unit={selectedUnit}
         onSuccess={refetch}
+        defaultProjectId={projectId}
       />
 
       {/* Deactivate/Activate Confirm Dialog */}

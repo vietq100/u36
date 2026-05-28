@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus, Edit, Check, X, Power } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/shared/inputs/Input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   useGetProjectFloors,

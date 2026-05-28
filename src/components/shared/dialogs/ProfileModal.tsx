@@ -6,9 +6,9 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/stores/useAuthStore";
 import { Camera, Loader2 } from "lucide-react";
-import { ActionModal } from "@/components/shared/ActionModal";
+import { ActionModal } from "@/components/shared/dialogs/ActionModal";
 import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/shared/inputs/Input";
 import { FormInput } from "@/components/shared/forms/FormInput";
 
 // Import real API hooks and functions

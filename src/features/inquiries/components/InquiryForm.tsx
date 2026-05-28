@@ -2,10 +2,9 @@ import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { DetailDialog } from "@/components/shared/DetailDialog";
+import { DetailDialog } from "@/components/shared/dialogs/DetailDialog";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
-import { FormCombobox } from "@/components/shared/forms/FormCombobox";
 import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor";
 import { FormSelect } from "@/components/shared/forms/FormSelect";
 
@@ -21,9 +20,10 @@ interface InquiryFormProps {
   onOpenChange: (open: boolean) => void;
   inquiry?: Inquiry | null;
   onSuccess?: () => void;
+  defaultProjectId?: number;
 }
 
-export function InquiryForm({ open, onOpenChange, inquiry, onSuccess }: InquiryFormProps) {
+export function InquiryForm({ open, onOpenChange, inquiry, onSuccess, defaultProjectId }: InquiryFormProps) {
   const statuses = useInquiriesStore((state) => state.statuses);
   const rawProjects = usePropertiesStore((state) => state.projects);
   const rawCompanies = useClientsStore((state) => state.companies);
@@ -70,14 +70,14 @@ export function InquiryForm({ open, onOpenChange, inquiry, onSuccess }: InquiryF
       form.reset({
         contactId: contacts[0]?.id || 0,
         companyId: 0,
-        projectId: projects[0]?.id || 0,
+        projectId: defaultProjectId || projects[0]?.id || 0,
         askingRent: 1000,
         actualSize: 75,
         statusId: 1,
         description: "",
       });
     }
-  }, [inquiry, open, form, contacts, projects]);
+  }, [inquiry, open, form, contacts, projects, defaultProjectId]);
 
   const mutation = useCreateOrUpdateInquiry({
     onSuccess: () => {
@@ -107,7 +107,7 @@ export function InquiryForm({ open, onOpenChange, inquiry, onSuccess }: InquiryF
         <form id="inquiry-form" onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
             
             {/* Select Representative Contact */}
-            <FormCombobox
+            <FormSelect
               control={form.control}
               name="contactId"
               label="Khách hàng yêu cầu (Liên hệ đại diện)"
@@ -117,7 +117,7 @@ export function InquiryForm({ open, onOpenChange, inquiry, onSuccess }: InquiryF
             />
 
             {/* Select Associated Company */}
-            <FormCombobox
+            <FormSelect
               control={form.control}
               name="companyId"
               label="Doanh nghiệp liên kết (Tùy chọn)"
@@ -127,13 +127,13 @@ export function InquiryForm({ open, onOpenChange, inquiry, onSuccess }: InquiryF
             />
 
             {/* Select Project of Interest */}
-            <FormCombobox
+            <FormSelect
               control={form.control}
               name="projectId"
               label="Dự án đô thị quan tâm"
               options={projectOptions}
               placeholder="Chọn dự án khu đô thị..."
-              disabled={mutation.isPending}
+              disabled={mutation.isPending || !!defaultProjectId}
             />
 
             <div className="grid grid-cols-2 gap-4">

@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Building, MapPin, Landmark, FileText, Settings, ShieldCheck, DollarSign } from "lucide-react";
 
-import { DetailSheet } from "@/components/shared/DetailSheet";
+import { DetailSheet } from "@/components/shared/dialogs/DetailSheet";
 import { Form, FormField, FormLabel } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
-import { FormCombobox } from "@/components/shared/forms/FormCombobox";
+import { FormSelect } from "@/components/shared/forms/FormSelect";
 import { FormDatePicker } from "@/components/shared/forms/FormDatePicker";
 import { FormTextarea } from "@/components/shared/forms/FormTextarea";
 
@@ -15,6 +15,11 @@ import { useCreateOrUpdateProject } from "../hooks/useProperties";
 import { projectSchema } from "../types";
 import type { Project, ProjectFormValues } from "../types";
 import { ProjectFloorsTab } from "./ProjectFloorsTab";
+import { UnitList } from "./UnitList";
+import { InquiryList } from "@/features/inquiries/components/InquiryList";
+import { ContractList } from "@/features/contracts/components/ContractList";
+import { TabDocument } from "./TabDocument";
+import { TabProjectUserPermission } from "./TabProjectUserPermission";
 
 // Import API Queries for Search Dropdowns
 import { useGetApiServicesAppCompanyGetAll } from "@/api/generated/company/company";
@@ -30,11 +35,12 @@ interface ProjectFormProps {
   onOpenChange: (open: boolean) => void;
   project?: Project | null;
   onSuccess?: () => void;
+  initialTab?: TabType;
 }
 
-type TabType = "summary" | "floors";
+type TabType = "summary" | "floors" | "units" | "inquiries" | "la" | "documents" | "permissions";
 
-export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectFormProps) {
+export function ProjectForm({ open, onOpenChange, project, onSuccess, initialTab }: ProjectFormProps) {
   const [activeTab, setActiveTab] = useState<TabType>("summary");
 
   const form = useForm<ProjectFormValues>({
@@ -163,7 +169,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
   // Reset form values when project changes
   useEffect(() => {
     if (open) {
-      setActiveTab("summary");
+      setActiveTab(initialTab || "summary");
       if (project) {
         // Format ISO Date to YYYY-MM-DD for standard html inputs
         const formatDate = (val?: string) => {
@@ -382,7 +388,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
   };
 
   const projectTabs = project && (
-    <div className="flex border-b border-border/20 gap-6 mt-4 pb-1">
+    <div className="flex flex-wrap border-b border-border/20 gap-x-6 gap-y-2 mt-4 pb-1">
       <button
         type="button"
         onClick={() => setActiveTab("summary")}
@@ -408,6 +414,76 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
       >
         Sơ đồ tầng / sàn
         {activeTab === "floors" && (
+          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full animate-fade-in" />
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={() => setActiveTab("units")}
+        className={`pb-2 text-xs uppercase tracking-wider font-bold transition-all relative ${
+          activeTab === "units"
+            ? "text-primary font-extrabold"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        Căn hộ / Mặt bằng
+        {activeTab === "units" && (
+          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full animate-fade-in" />
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={() => setActiveTab("inquiries")}
+        className={`pb-2 text-xs uppercase tracking-wider font-bold transition-all relative ${
+          activeTab === "inquiries"
+            ? "text-primary font-extrabold"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        Yêu cầu hỗ trợ (Inquiry)
+        {activeTab === "inquiries" && (
+          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full animate-fade-in" />
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={() => setActiveTab("la")}
+        className={`pb-2 text-xs uppercase tracking-wider font-bold transition-all relative ${
+          activeTab === "la"
+            ? "text-primary font-extrabold"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        Hợp đồng (LA)
+        {activeTab === "la" && (
+          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full animate-fade-in" />
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={() => setActiveTab("documents")}
+        className={`pb-2 text-xs uppercase tracking-wider font-bold transition-all relative ${
+          activeTab === "documents"
+            ? "text-primary font-extrabold"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        Tài liệu
+        {activeTab === "documents" && (
+          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full animate-fade-in" />
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={() => setActiveTab("permissions")}
+        className={`pb-2 text-xs uppercase tracking-wider font-bold transition-all relative ${
+          activeTab === "permissions"
+            ? "text-primary font-extrabold"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        Phân quyền thành viên
+        {activeTab === "permissions" && (
           <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full animate-fade-in" />
         )}
       </button>
@@ -456,7 +532,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Landlord Dropdown */}
-                    <FormCombobox
+                    <FormSelect
                       control={form.control}
                       name="landlordId"
                       label="Chủ đầu tư (Lessor)"
@@ -467,7 +543,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
                     />
 
                     {/* Property Management Dropdown */}
-                    <FormCombobox
+                    <FormSelect
                       control={form.control}
                       name="propertyManagementId"
                       label="Đơn vị Quản lý vận hành"
@@ -478,7 +554,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
                     />
 
                     {/* Contact Person Dropdown */}
-                    <FormCombobox
+                    <FormSelect
                       control={form.control}
                       name="contactId"
                       label="Người liên hệ"
@@ -536,7 +612,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     {/* Province Dropdown */}
-                    <FormCombobox
+                    <FormSelect
                       control={form.control}
                       name="provinceId"
                       label="Tỉnh / Thành phố"
@@ -549,7 +625,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
                     />
 
                     {/* District Dropdown */}
-                    <FormCombobox
+                    <FormSelect
                       control={form.control}
                       name="districtId"
                       label="Quận / Huyện"
@@ -705,9 +781,19 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
 
               </form>
             </Form>
-          ) : (
+          ) : activeTab === "floors" ? (
             project && <ProjectFloorsTab projectId={project.id} />
-          )}
+          ) : activeTab === "units" ? (
+            project && <UnitList projectId={project.id} />
+          ) : activeTab === "inquiries" ? (
+            project && <InquiryList projectId={project.id} />
+          ) : activeTab === "la" ? (
+            project && <ContractList projectId={project.id} />
+          ) : activeTab === "documents" ? (
+            project && <TabDocument inputId={String(project.id)} />
+          ) : activeTab === "permissions" ? (
+            project && <TabProjectUserPermission projectId={project.id} />
+          ) : null}
     </DetailSheet>
   );
 }

@@ -3,10 +3,10 @@ import type { ColumnDef, PaginationState } from "@tanstack/react-table";
 import { Edit, Trash2, Search, Building2, User } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DataTable } from "@/components/shared/DataTable";
-import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { Input } from "@/components/shared/inputs/Input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/inputs/Select";
+import { DataTable } from "@/components/shared/tables/DataTable";
+import { ConfirmDialog } from "@/components/shared/dialogs/ConfirmDialog";
 
 import { useGetInquiries, useDeleteInquiry } from "../hooks/useInquiries";
 import { useInquiriesStore } from "../stores/useInquiriesStore";
@@ -15,14 +15,14 @@ import { useClientsStore } from "@/features/clients/stores/useClientsStore";
 import { InquiryForm } from "./InquiryForm";
 import type { Inquiry } from "../types";
 
-export function InquiryList() {
+export function InquiryList({ projectId }: { projectId?: number }) {
   const statuses = useInquiriesStore((state) => state.statuses);
   const projects = usePropertiesStore((state) => state.projects).filter(p => p.isActive);
   const companies = useClientsStore((state) => state.companies).filter(c => c.isActive);
 
   // Filters & paging state
   const [keyword, setKeyword] = useState("");
-  const [selectedProjectId, setSelectedProjectId] = useState<number>(0);
+  const [selectedProjectId, setSelectedProjectId] = useState<number>(projectId || 0);
   const [selectedCompanyId, setSelectedCompanyId] = useState<number>(0);
   const [selectedStatusId, setSelectedStatusId] = useState<number>(0);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -178,7 +178,7 @@ export function InquiryList() {
 
   const clearFilters = () => {
     setKeyword("");
-    setSelectedProjectId(0);
+    setSelectedProjectId(projectId || 0);
     setSelectedCompanyId(0);
     setSelectedStatusId(0);
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
@@ -201,25 +201,27 @@ export function InquiryList() {
           </form>
 
           {/* Project dropdown Filter */}
-          <Select
-            value={String(selectedProjectId)}
-            onValueChange={(val) => {
-              setSelectedProjectId(Number(val));
-              setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-            }}
-          >
-            <SelectTrigger className="w-full sm:w-[170px] h-10 bg-card text-foreground border-input">
-              <SelectValue placeholder="Tất cả dự án" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0">Tất cả dự án</SelectItem>
-              {projects.map((p) => (
-                <SelectItem key={p.id} value={String(p.id)}>
-                  {p.projectName}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {!projectId && (
+            <Select
+              value={String(selectedProjectId)}
+              onValueChange={(val) => {
+                setSelectedProjectId(Number(val));
+                setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+              }}
+            >
+              <SelectTrigger className="w-full sm:w-[170px] h-10 bg-card text-foreground border-input">
+                <SelectValue placeholder="Tất cả dự án" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">Tất cả dự án</SelectItem>
+                {projects.map((p) => (
+                  <SelectItem key={p.id} value={String(p.id)}>
+                    {p.projectName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
 
           {/* Company dropdown Filter */}
           <Select
@@ -264,7 +266,7 @@ export function InquiryList() {
           </Select>
 
           {/* Reset Filters button */}
-          {(keyword || selectedProjectId !== 0 || selectedCompanyId !== 0 || selectedStatusId !== 0) && (
+          {(keyword || selectedProjectId !== (projectId || 0) || selectedCompanyId !== 0 || selectedStatusId !== 0) && (
             <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground h-10 text-xs hover:bg-accent/10">
               Xóa bộ lọc
             </Button>
@@ -295,6 +297,7 @@ export function InquiryList() {
         onOpenChange={setIsFormOpen}
         inquiry={selectedInquiry}
         onSuccess={refetch}
+        defaultProjectId={projectId}
       />
 
       {/* Delete Confirm Dialog */}

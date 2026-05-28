@@ -13,7 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/shared/inputs/Select";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;

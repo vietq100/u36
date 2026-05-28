@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { LayoutGrid, DollarSign, Eye, ShieldCheck, FileText } from "lucide-react";
 
-import { DetailSheet } from "@/components/shared/DetailSheet";
+import { DetailSheet } from "@/components/shared/dialogs/DetailSheet";
 import { Form, FormField, FormLabel } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
-import { FormCombobox } from "@/components/shared/forms/FormCombobox";
+import { FormSelect } from "@/components/shared/forms/FormSelect";
 import { FormTextarea } from "@/components/shared/forms/FormTextarea";
 
 import { useGetProjects, useGetProjectFloors, useCreateOrUpdateUnit } from "../hooks/useProperties";
@@ -29,9 +29,10 @@ interface UnitFormProps {
   onOpenChange: (open: boolean) => void;
   unit?: Unit | null;
   onSuccess?: () => void;
+  defaultProjectId?: number;
 }
 
-export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps) {
+export function UnitForm({ open, onOpenChange, unit, onSuccess, defaultProjectId }: UnitFormProps) {
   const form = useForm<UnitFormValues>({
     resolver: zodResolver(unitSchema) as any,
     defaultValues: {
@@ -167,7 +168,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
       } else {
         form.reset({
           unitName: "",
-          projectId: 0,
+          projectId: defaultProjectId || 0,
           floorId: 0,
           floorName: "",
           actualSize: 0,
@@ -185,7 +186,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
         });
       }
     }
-  }, [unit, open, form]);
+  }, [unit, open, form, defaultProjectId]);
 
   const mutation = useCreateOrUpdateUnit({
     onSuccess: () => {
@@ -249,7 +250,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Project Selector */}
-                      <FormCombobox
+                      <FormSelect
                         control={form.control}
                         name="projectId"
                         label="Dự án"
@@ -261,10 +262,11 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
                         }}
                         placeholder="Chọn Dự án"
                         searchPlaceholder="Tìm kiếm..."
+                        disabled={!!defaultProjectId}
                       />
 
                       {/* Floor Selector */}
-                      <FormCombobox
+                      <FormSelect
                         control={form.control}
                         name="floorId"
                         label="Tầng / Sàn"
@@ -278,7 +280,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
                       <FormInput control={form.control} name="unitName" label="Mã căn hộ / Mặt bằng" placeholder="Ví dụ: CR2-01-01" required />
 
                       {/* Product Type Selector */}
-                      <FormCombobox
+                      <FormSelect
                         control={form.control}
                         name="productTypeId"
                         label="Loại sản phẩm"
@@ -293,7 +295,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Unit Type Selector */}
-                      <FormCombobox
+                      <FormSelect
                         control={form.control}
                         name="unitTypeId"
                         label="Loại căn hộ"
@@ -303,7 +305,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
                       />
 
                       {/* Unit Status Selector */}
-                      <FormCombobox
+                      <FormSelect
                         control={form.control}
                         name="statusId"
                         label="Trạng thái"
@@ -342,7 +344,7 @@ export function UnitForm({ open, onOpenChange, unit, onSuccess }: UnitFormProps)
                     </div>
 
                     {/* Facing direction selector */}
-                    <FormCombobox
+                    <FormSelect
                       control={form.control}
                       name="facingId"
                       label="Hướng ban công/Cửa chính"

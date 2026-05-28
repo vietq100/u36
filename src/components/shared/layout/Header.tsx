@@ -35,8 +35,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ProfileModal } from "./ProfileModal";
-import { ChangePasswordModal } from "./ChangePasswordModal";
+import { ProfileModal } from "@/components/shared/dialogs/ProfileModal";
+import { ChangePasswordModal } from "@/components/shared/dialogs/ChangePasswordModal";
 import { useGetApiServicesAppProfileGetProfilePicture } from "@/api/generated/profile/profile";
 import { useGetApiServicesAppSessionGetCurrentLoginInformations } from "@/api/generated/session/session";
 

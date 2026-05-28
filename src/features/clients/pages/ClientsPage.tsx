@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PageHeader } from "@/components/shared/PageHeader";
+import { PageHeader } from "@/components/shared/layout/PageHeader";
 import { ContactList } from "../components/ContactList";
 import { CompanyList } from "../components/CompanyList";
 import { UserCheck, Building, BarChart2, PieChart as PieIcon } from "lucide-react";

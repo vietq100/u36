@@ -2,10 +2,9 @@ import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { DetailDialog } from "@/components/shared/DetailDialog";
+import { DetailDialog } from "@/components/shared/dialogs/DetailDialog";
 import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
-import { FormCombobox } from "@/components/shared/forms/FormCombobox";
 import { FormSelect } from "@/components/shared/forms/FormSelect";
 import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor";
 import { FormDatePicker } from "@/components/shared/forms/FormDatePicker";
@@ -23,9 +22,10 @@ interface ContractFormProps {
   onOpenChange: (open: boolean) => void;
   contract?: LeaseContract | null;
   onSuccess?: () => void;
+  defaultProjectId?: number;
 }
 
-export function ContractForm({ open, onOpenChange, contract, onSuccess }: ContractFormProps) {
+export function ContractForm({ open, onOpenChange, contract, onSuccess, defaultProjectId }: ContractFormProps) {
   const statuses = useContractsStore((state) => state.statuses);
   const units = usePropertiesStore((state) => state.units);
   const rawCompanies = useClientsStore((state) => state.companies);
@@ -55,6 +55,7 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess }: Contra
   // If editing, make sure the current unit is included even if it's currently marked as 'RENTED'
   const unitOptions = units
     .filter(u => u.isActive && (u.statusId === 1 || (contract && u.id === contract.unitId)))
+    .filter(u => !defaultProjectId || u.projectId === defaultProjectId)
     .map(u => ({
       value: u.id,
       label: `${u.unitName} - ${u.projectName} (${u.floorName})`
@@ -175,7 +176,7 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess }: Contra
             </div>
 
             {/* Select Unit */}
-            <FormCombobox
+            <FormSelect
               control={form.control}
               name="unitId"
               label="Căn hộ / Mặt bằng thương mại"
@@ -185,7 +186,7 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess }: Contra
             />
 
             {/* Select Company */}
-            <FormCombobox
+            <FormSelect
               control={form.control}
               name="companyId"
               label="Doanh nghiệp thuê (Bên B)"
@@ -195,7 +196,7 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess }: Contra
             />
 
             {/* Select Contact Signatory */}
-            <FormCombobox
+            <FormSelect
               control={form.control}
               name="contactId"
               label="Người đại diện ký kết"

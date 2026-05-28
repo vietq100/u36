@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/shared/PageHeader";
+import { PageHeader } from "@/components/shared/layout/PageHeader";
 import { InquiryList } from "../components/InquiryList";
 import { MessageSquare, HeartHandshake, CheckCircle2, XCircle } from "lucide-react";
 import { useInquiriesStore } from "../stores/useInquiriesStore";

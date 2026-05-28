@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { lazy, Suspense } from "react";
-import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
+import { LoadingOverlay } from "@/components/shared/feedback/LoadingOverlay";
 
 // Lazy load pages for performance
 const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));

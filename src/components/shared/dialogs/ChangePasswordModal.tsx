@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { KeyRound, Eye, EyeOff } from "lucide-react";
-import { ActionModal } from "@/components/shared/ActionModal";
+import { ActionModal } from "@/components/shared/dialogs/ActionModal";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/shared/inputs/Input";
 import { usePostApiServicesAppUserChangePassword } from "@/api/generated/user/user";
 
 interface ChangePasswordModalProps {

@@ -13,7 +13,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/shared/inputs/Select";
 
 interface SelectOption {
   value: string | number;
@@ -29,6 +29,9 @@ interface FormSelectProps<T extends FieldValues> {
   description?: string;
   disabled?: boolean;
   valueType?: "string" | "number";
+  onChange?: (value: any) => void;
+  searchPlaceholder?: string;
+  emptyMessage?: string;
 }
 
 export function FormSelect<T extends FieldValues>({
@@ -40,13 +43,19 @@ export function FormSelect<T extends FieldValues>({
   description,
   disabled = false,
   valueType,
+  onChange,
+  searchPlaceholder,
+  emptyMessage,
 }: FormSelectProps<T>) {
   return (
     <FormField
       control={control as any}
       name={name as any}
       render={({ field }) => {
-        const isNumeric = valueType === "number" || typeof options[0]?.value === "number";
+        const isNumeric = 
+          valueType === "number" || 
+          typeof field.value === "number" ||
+          options.some(opt => typeof opt.value === "number");
         const valStr = field.value !== undefined && field.value !== null ? String(field.value) : "";
 
         return (
@@ -55,7 +64,17 @@ export function FormSelect<T extends FieldValues>({
             <Select
               disabled={disabled}
               onValueChange={(val) => {
-                field.onChange(isNumeric ? Number(val) : val);
+                let parsedVal: any = val;
+                if (isNumeric) {
+                  if (val === "" || val === "null" || val === "undefined") {
+                    parsedVal = null;
+                  } else {
+                    const num = Number(val);
+                    parsedVal = isNaN(num) ? val : num;
+                  }
+                }
+                field.onChange(parsedVal);
+                onChange?.(parsedVal);
               }}
               value={valStr}
             >
@@ -64,7 +83,7 @@ export function FormSelect<T extends FieldValues>({
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent searchPlaceholder={searchPlaceholder} emptyMessage={emptyMessage}>
                 {options.map((opt) => (
                   <SelectItem key={opt.value} value={String(opt.value)}>
                     {opt.label}

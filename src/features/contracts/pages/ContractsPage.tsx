@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/shared/PageHeader";
+import { PageHeader } from "@/components/shared/layout/PageHeader";
 import { ContractList } from "../components/ContractList";
 import { FileText, ShieldAlert, BadgeDollarSign, CalendarDays } from "lucide-react";
 import { useContractsStore } from "../stores/useContractsStore";

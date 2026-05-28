@@ -243,4 +243,30 @@ export const floorSchema = z.object({
 
 export type FloorFormValues = z.infer<typeof floorSchema>;
 
+// Zod schema for Tenant Form Validation
+export const tenantSchema = z.object({
+  name: z.string().min(1, "Tên cư dân/khách thuê không được để trống"),
+  gender: z.string().min(1, "Vui lòng chọn giới tính"),
+  passport: z.string().min(1, "Số hộ chiếu/CMND không được để trống"),
+  nationalityId: z.coerce.number().min(1, "Vui lòng chọn quốc tịch"),
+  phone: z.string().min(1, "Số điện thoại không được để trống"),
+  emailAddress: z.string().email("Email không hợp lệ").min(1, "Email không được để trống"),
+});
+
+export type TenantFormValues = z.infer<typeof tenantSchema>;
+
+// Frontend Tenant Interface
+export interface Tenant {
+  id: number;
+  gender: string;
+  uniqueId: string;
+  name: string;
+  phone: string;
+  passport: string;
+  emailAddress: string;
+  isActive: boolean;
+  nationalityId?: number;
+  nationalityName?: string;
+}
+
 

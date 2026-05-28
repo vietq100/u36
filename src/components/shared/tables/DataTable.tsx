@@ -18,9 +18,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination } from "./DataTablePagination";
-import { LoadingOverlay } from "./LoadingOverlay";
-import { EmptyState } from "./EmptyState";
+import { DataTablePagination } from "@/components/shared/tables/DataTablePagination";
+import { LoadingOverlay } from "@/components/shared/feedback/LoadingOverlay";
+import { EmptyState } from "@/components/shared/tables/EmptyState";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4 relative">
-      <div className="rounded-table border border-border/50 dark:border-white/10 bg-card/40 dark:bg-white/3 backdrop-blur-md relative min-h-[300px] overflow-hidden shadow-md">
+      <div className="rounded-table border border-border/50 dark:border-white/10 bg-table/90 dark:bg-white/3 backdrop-blur-md relative min-h-[300px] overflow-hidden shadow-md">
         {isLoading && <LoadingOverlay />}
         
         <Table>

@@ -193,7 +193,7 @@ const SelectContent = React.forwardRef<
         {...props}
       >
         {showSearchInput && (
-          <div className="flex items-center border-b border-border/50 px-2.5 pb-1 mb-1">
+          <div className="flex items-center border-b border-border/50 px-2.5 pb-1 mb-1 sticky top-0 bg-popover/95 dark:bg-black/95 backdrop-blur-md z-10 -mx-1 -mt-1 pt-1.5 px-2.5">
             <Search className="mr-2 h-3.5 w-3.5 shrink-0 opacity-50 text-muted-foreground" />
             <input
               autoFocus
@@ -206,7 +206,7 @@ const SelectContent = React.forwardRef<
             />
           </div>
         )}
-        <div className="space-y-0.5 max-h-48 overflow-y-auto">
+        <div className="space-y-0.5">
           {matchedCount === 0 && options.length > 0 ? (
             <div className="py-2 text-center text-xs text-muted-foreground">
               {emptyMessage}
@@ -232,7 +232,7 @@ const SelectItem = React.forwardRef<
     disabled?: boolean
   }
 >(({ className, children, value, disabled = false, ...props }, ref) => {
-  const { value: selectedValue, onValueChange, setOpen, search, registerOption, deregisterOption } = useSelect()
+  const { value: selectedValue, onValueChange, setOpen, search, registerOption } = useSelect()
 
   // Lấy nhãn dạng text sạch để dùng cho search
   const labelText = React.useMemo(() => {
@@ -242,18 +242,13 @@ const SelectItem = React.forwardRef<
   // Đăng ký option khi component mount
   React.useEffect(() => {
     registerOption(value, labelText, disabled)
-    return () => {
-      deregisterOption(value)
-    }
-  }, [value, labelText, disabled, registerOption, deregisterOption])
+  }, [value, labelText, disabled, registerOption])
 
   // Kiểm tra khớp từ khóa tìm kiếm
   const isMatch = React.useMemo(() => {
     if (!search) return true
     return labelText.toLowerCase().includes(search.toLowerCase())
   }, [search, labelText])
-
-  if (!isMatch) return null
 
   const isSelected = selectedValue === value
 
@@ -271,6 +266,7 @@ const SelectItem = React.forwardRef<
       className={cn(
         "relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-all hover:bg-primary/10 hover:text-primary data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 text-foreground text-left",
         isSelected && "bg-primary/10 text-primary font-semibold",
+        !isMatch && "hidden",
         className
       )}
       {...props}
