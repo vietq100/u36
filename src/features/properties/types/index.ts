@@ -118,6 +118,7 @@ export interface Project {
   numberOfUnits: number;
   description?: string;
   isActive: boolean;
+  projectTypeMap?: any[];
   
   sortNumber?: number;
   landlordName?: string;

@@ -12,6 +12,13 @@ const DashboardPage = lazy(() => import("@/features/dashboard/pages/DashboardPag
 const ContractsPage = lazy(() => import("@/features/contracts/pages/ContractsPage"));
 const InquiriesPage = lazy(() => import("@/features/inquiries/pages/InquiriesPage"));
 
+const OperationPage = lazy(() => import("@/features/dashboard/pages/OperationPage"));
+const ResidentialPage = lazy(() => import("@/features/dashboard/pages/ResidentialPage"));
+const ReportsPage = lazy(() => import("@/features/dashboard/pages/ReportsPage"));
+const ProposalsPage = lazy(() => import("@/features/dashboard/pages/ProposalsPage"));
+const TenantsPage = lazy(() => import("@/features/dashboard/pages/TenantsPage"));
+const SettingsPage = lazy(() => import("@/features/dashboard/pages/SettingsPage"));
+
 // Suspense wrapper helper
 const withSuspense = (Component: React.ComponentType) => (
   <Suspense fallback={<LoadingOverlay fullScreen />}>
@@ -50,6 +57,30 @@ export const router = createBrowserRouter([
           {
             path: "inquiries",
             element: withSuspense(InquiriesPage),
+          },
+          {
+            path: "operation",
+            element: withSuspense(OperationPage),
+          },
+          {
+            path: "residential",
+            element: withSuspense(ResidentialPage),
+          },
+          {
+            path: "reports",
+            element: withSuspense(ReportsPage),
+          },
+          {
+            path: "proposals",
+            element: withSuspense(ProposalsPage),
+          },
+          {
+            path: "tenants",
+            element: withSuspense(TenantsPage),
+          },
+          {
+            path: "settings",
+            element: withSuspense(SettingsPage),
           },
           {
             path: "unauthorized",

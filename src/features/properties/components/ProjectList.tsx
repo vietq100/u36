@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import type { ColumnDef, PaginationState } from "@tanstack/react-table";
 import { Edit, Power, Search, Building2, ShieldCheck, FilePlus2 } from "lucide-react";
 import { toast } from "sonner";
@@ -13,12 +14,22 @@ import { AddUserPermissionDialog } from "./AddUserPermissionDialog";
 import type { Project } from "../types";
 
 export function ProjectList() {
+  const [searchParams] = useSearchParams();
+  const keywordParam = searchParams.get("keyword");
+
   // Query Filters & Paging state
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState(keywordParam || "");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
+
+  useEffect(() => {
+    if (keywordParam !== null) {
+      setKeyword(keywordParam);
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    }
+  }, [keywordParam]);
 
   // Edit / Toggle State
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);

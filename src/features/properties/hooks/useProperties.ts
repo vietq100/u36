@@ -103,6 +103,7 @@ const mapProjectDto = (dto: any): Project => {
     propertyManagementId: dto.propertyManagementId,
     contactId: dto.contactId,
     projectFacilityIds: dto.projectFacilityMap ? dto.projectFacilityMap.map((f: any) => f.projectFacilityId || f.facilityId) : (dto.projectFacilityIds || []),
+    projectTypeMap: dto.projectTypeMap || [],
     
     // Address mapping
     projectAddressText: addressObj ? addressObj.address || "" : "",

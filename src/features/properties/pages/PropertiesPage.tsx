@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { PageHeader } from "@/components/shared/layout/PageHeader";
 import { ProjectList } from "../components/ProjectList";
 import { UnitList } from "../components/UnitList";
@@ -6,7 +7,17 @@ import { TenantList } from "../components/TenantList";
 import { Building2, LayoutGrid, Users } from "lucide-react";
 
 export default function PropertiesPage() {
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState<"units" | "projects" | "tenants">("units");
+
+  useEffect(() => {
+    if (tabParam === "projects" || tabParam === "tenants" || tabParam === "units") {
+      setActiveTab(tabParam);
+    } else if (searchParams.get("keyword")) {
+      setActiveTab("projects");
+    }
+  }, [tabParam, searchParams]);
 
   return (
     <div className="space-y-6">
