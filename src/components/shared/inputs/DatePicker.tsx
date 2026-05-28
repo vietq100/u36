@@ -2,9 +2,7 @@ import * as React from "react"
 import { Calendar } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-export interface DatePickerProps extends Omit<React.ComponentProps<"input">, "type"> {}
-
-const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
+const DatePicker = React.forwardRef<HTMLInputElement, Omit<React.ComponentProps<"input">, "type">>(
   ({ className, ...props }, ref) => {
     return (
       <div className="relative w-full group">
@@ -12,7 +10,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           type="date"
           ref={ref}
           className={cn(
-            "h-8 w-full min-w-0 rounded-input border border-border bg-input pl-2.5 pr-8 py-1 text-base transition-all outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-1 aria-invalid:ring-destructive/40 md:text-sm transition-all duration-200 cursor-pointer scheme-light dark:scheme-dark",
+            "h-8 w-full min-w-0 rounded-input border border-border bg-input pl-2.5 pr-8 py-1 text-base transition-all outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-muted disabled:opacity-70 aria-invalid:border-destructive aria-invalid:ring-1 aria-invalid:ring-destructive/40 md:text-sm transition-all duration-200 cursor-pointer scheme-light dark:scheme-dark",
             className
           )}
           {...props}

@@ -188,7 +188,7 @@ export function CompanyList() {
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             }}
           >
-            <SelectTrigger className="w-full sm:w-[180px] h-10 bg-card text-foreground border-input">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Tất cả ngành nghề" />
             </SelectTrigger>
             <SelectContent>
@@ -203,7 +203,7 @@ export function CompanyList() {
 
           {/* Reset Filters button */}
           {(keyword || selectedIndustryId !== 0) && (
-            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground h-10 text-xs">
+            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground text-xs">
               Xóa bộ lọc
             </Button>
           )}

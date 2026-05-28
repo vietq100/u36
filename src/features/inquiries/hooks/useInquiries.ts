@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Inquiry } from "../types";
 
@@ -46,12 +47,16 @@ export function useGetInquiries(params: {
     MaxResultCount: params.MaxResultCount,
   });
 
-  return {
-    ...query,
-    data: query.data ? {
+  const mappedData = useMemo(() => {
+    return query.data ? {
       items: ((query.data as any).items || []).map(mapInquiryDto),
       totalCount: (query.data as any).totalCount || 0,
-    } : undefined,
+    } : undefined;
+  }, [query.data]);
+
+  return {
+    ...query,
+    data: mappedData,
   };
 }
 
@@ -92,7 +97,7 @@ export function useDeleteInquiry(options?: { onSuccess?: () => void }) {
   const queryClient = useQueryClient();
 
   const mockMutation = useMutation({
-    mutationFn: async (_id: number) => {
+    mutationFn: async () => {
       // backend API lacks a delete inquiry endpoint, so we return a placeholder success.
       return {};
     },

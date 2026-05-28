@@ -23,6 +23,7 @@ export function FormDatePicker<T extends FieldValues>({
   name,
   label,
   description,
+  required,
   ...props
 }: FormDatePickerProps<T>) {
   return (
@@ -31,9 +32,9 @@ export function FormDatePicker<T extends FieldValues>({
       name={name as any}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel required={required}>{label}</FormLabel>
           <FormControl>
-            <DatePicker {...props} {...field} value={field.value ?? ""} />
+            <DatePicker {...props} required={required} {...field} value={field.value ?? ""} />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />

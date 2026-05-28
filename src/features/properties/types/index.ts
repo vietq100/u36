@@ -5,15 +5,23 @@ export const projectSchema = z.object({
   projectName: z.string().min(1, "Tên dự án không được để trống"),
   projectCode: z.string().min(1, "Mã dự án không được để trống"),
   numberOfFloors: z.coerce.number().min(1, "Số tầng phải lớn hơn hoặc bằng 1"),
+  numberOfUnits: z.coerce.number().optional().nullable(),
   sortNumber: z.coerce.number().optional().nullable(),
   landlordName: z.string().optional().nullable(),
   totalSize: z.coerce.number().optional().nullable(),
   builtDate: z.string().optional().nullable(),
   link: z.string().optional().nullable(),
   description: z.string().optional().nullable(),
+  bankInfo: z.string().optional().nullable(),
   budgetCode: z.string().optional().nullable(),
   projectManagerName: z.string().optional().nullable(),
-  
+
+  // Custom product & unit types map field for form state
+  projectTypeMap: z.array(z.object({
+    propertyTypeId: z.coerce.number(),
+    unitTypeId: z.array(z.coerce.number()),
+  })).optional().nullable(),
+
   // Lessor fields
   lessorAddress: z.string().optional().nullable(),
   lessorAddressVi: z.string().optional().nullable(),
@@ -75,14 +83,18 @@ export const projectSchema = z.object({
   // Dropdowns / Relations
   landlordId: z.coerce.number().optional().nullable(),
   propertyManagementId: z.coerce.number().optional().nullable(),
-  contactId: z.coerce.number().optional().nullable(),
+
   projectFacilityIds: z.array(z.number()).optional().nullable(),
-  
+
   // Address relations
   projectAddressText: z.string().optional().nullable(),
-  projectAddressTextVi: z.string().optional().nullable(),
-  provinceId: z.coerce.number().optional().nullable(),
-  districtId: z.coerce.number().optional().nullable(),
+  projectAddressTextVi: z.string().min(1, "Địa chỉ đầy đủ (Tiếng Việt) không được để trống"),
+  provinceId: z.coerce.number().optional().nullable().refine((val) => val !== null && val !== undefined && val > 0, {
+    message: "Vui lòng chọn Tỉnh/Thành phố",
+  }),
+  districtId: z.coerce.number().optional().nullable().refine((val) => val !== null && val !== undefined && val > 0, {
+    message: "Vui lòng chọn Quận/Huyện",
+  }),
 });
 
 export type ProjectFormValues = z.infer<typeof projectSchema>;
@@ -97,7 +109,7 @@ export const unitSchema = z.object({
   price: z.coerce.number().min(0, "Giá thuê phải lớn hơn hoặc bằng 0"),
   statusId: z.coerce.number().min(1, "Vui lòng chọn trạng thái"),
   description: z.string().optional().nullable(),
-  
+
   productTypeId: z.coerce.number().optional().nullable(),
   unitTypeId: z.coerce.number().optional().nullable(),
   balcony: z.coerce.number().optional().nullable(),
@@ -118,7 +130,7 @@ export interface Project {
   numberOfUnits: number;
   description?: string;
   isActive: boolean;
-  
+
   sortNumber?: number;
   landlordName?: string;
   totalSize?: number;
@@ -126,6 +138,8 @@ export interface Project {
   link?: string;
   budgetCode?: string;
   projectManagerName?: string;
+  bankInfo?: string;
+  projectTypeMap?: Array<{ propertyTypeId: number; unitTypeId: number[] }>;
 
   // Lessor fields
   lessorAddress?: string;
@@ -188,14 +202,15 @@ export interface Project {
   // Relations
   landlordId?: number;
   propertyManagementId?: number;
-  contactId?: number;
+
   projectFacilityIds?: number[];
-  
+
   // Address relations
   projectAddressText?: string;
   projectAddressTextVi?: string;
   provinceId?: number;
   districtId?: number;
+  projectAddressId?: number;
 }
 
 // Frontend Unit Interface

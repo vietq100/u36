@@ -4,6 +4,8 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -53,6 +55,7 @@
   --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
+  --color-select-popover-bg: var(--select-popover-bg);
   --color-card-foreground: var(--card-foreground);
   --color-table: var(--table);
   --color-card: var(--card);
@@ -73,13 +76,14 @@
 }
 
 :root {
-  --background: oklch(96.948% 0.00465 258.633);
+  --background: oklch(97.197% 0.01328 262.46 / 0.736);
   --foreground: oklch(17.589% 0.02709 314.028);
   --table: rgba(255, 255, 255, 0.88);
   --card: rgba(255, 255, 255, 0.4);
   --card-foreground: oklch(0.2 0.02 165);
   --popover: rgba(255, 255, 255, 0.902);
   --popover-foreground: oklch(0.2 0.02 165);
+  --select-popover-bg: rgba(255, 255, 255, 0.95);
   --primary: oklch(0.38 0.09 165);
   --primary-foreground: oklch(0.99 0.002 165);
   --secondary: rgba(0, 0, 0, 0.04);
@@ -90,8 +94,8 @@
   --accent-foreground: oklch(0.3 0.05 85);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.99 0.002 165);
-  --border: rgba(0, 0, 0, 0.06);
-  --input: rgba(0, 0, 0, 0.04);
+  --border: rgba(0, 0, 0, 0.12);
+  --input: #ffffff;
   --ring: oklch(0.38 0.09 165);
   --radius: 0.75rem;
   --radius-input: calc(var(--radius) * 0.8);
@@ -109,6 +113,7 @@
   --card-foreground: oklch(0.95 0.005 220);
   --popover: oklch(27.42% 0.043 281.867 / 0.95);
   --popover-foreground: oklch(0.95 0.005 220);
+  --select-popover-bg: oklch(27.42% 0.043 281.867 / 0.95);
   --primary: oklch(0.65 0.11 220);
   --primary-foreground: oklch(0.06 0.01 220);
   --secondary: rgba(255, 255, 255, 0.05);
@@ -135,5 +140,10 @@
 
   html {
     @apply font-sans;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    opacity: 0.22;
   }
 }

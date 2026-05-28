@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { PageHeader } from "@/components/shared/layout/PageHeader";
 import { ContractList } from "../components/ContractList";
 import { FileText, ShieldAlert, BadgeDollarSign, CalendarDays } from "lucide-react";
@@ -14,11 +15,12 @@ export default function ContractsPage() {
   const totalDeposit = activeContracts.reduce((sum, c) => sum + c.depositAmount, 0);
 
   // 2. Count contracts expiring soon (e.g. within 90 days)
+  const [nowTime] = useState(() => Date.now());
   const expiringSoonCount = contracts.filter((c) => {
     if (c.statusId !== 2) return false;
     const expiry = new Date(c.expiryDate).getTime();
     const ninetyDays = 90 * 24 * 60 * 60 * 1000;
-    return expiry - Date.now() < ninetyDays && expiry - Date.now() > 0;
+    return expiry - nowTime < ninetyDays && expiry - nowTime > 0;
   }).length;
 
   const summaryCards = [

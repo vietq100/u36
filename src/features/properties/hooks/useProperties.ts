@@ -1,9 +1,11 @@
+import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Project, Unit, Floor } from "../types";
 
 // Import Orval generated hooks
-import { 
+import {
   useGetApiServicesAppProjectGetAll,
+  useGetApiServicesAppProjectGet,
   usePostApiServicesAppProjectCreateOrUpdate,
   usePostApiServicesAppProjectActive
 } from "@/api/generated/project/project";
@@ -23,6 +25,26 @@ import {
 // DTO Mappers
 const mapProjectDto = (dto: any): Project => {
   const addressObj = dto.projectAddress && dto.projectAddress.length > 0 ? dto.projectAddress[0] : null;
+
+  // Group projectTypeMap by propertyTypeId in pure JS
+  const projectTypeMapGrouped = dto.projectTypeMap ? (() => {
+    const groups: Record<number, number[]> = {};
+    dto.projectTypeMap.forEach((item: any) => {
+      if (item.propertyTypeId) {
+        if (!groups[item.propertyTypeId]) {
+          groups[item.propertyTypeId] = [];
+        }
+        if (item.unitTypeId) {
+          groups[item.propertyTypeId].push(item.unitTypeId);
+        }
+      }
+    });
+    return Object.entries(groups).map(([propId, unitIds]) => ({
+      propertyTypeId: Number(propId),
+      unitTypeId: unitIds,
+    }));
+  })() : [];
+
   return {
     id: dto.id || 0,
     projectName: dto.projectName || "",
@@ -31,7 +53,7 @@ const mapProjectDto = (dto: any): Project => {
     numberOfUnits: dto.numberOfUnits || 0,
     description: dto.description || "",
     isActive: dto.isActive !== false,
-    
+
     sortNumber: dto.sortNumber,
     landlordName: dto.landlordName || "",
     totalSize: dto.totalSize,
@@ -39,6 +61,8 @@ const mapProjectDto = (dto: any): Project => {
     link: dto.link || "",
     budgetCode: dto.budgetCode || "",
     projectManagerName: dto.projectManagerName || "",
+    bankInfo: dto.bankInfo || "",
+    projectTypeMap: projectTypeMapGrouped,
 
     // Lessor fields
     lessorAddress: dto.lessorAddress || "",
@@ -101,14 +125,15 @@ const mapProjectDto = (dto: any): Project => {
     // Relations
     landlordId: dto.landlordId,
     propertyManagementId: dto.propertyManagementId,
-    contactId: dto.contactId,
+
     projectFacilityIds: dto.projectFacilityMap ? dto.projectFacilityMap.map((f: any) => f.projectFacilityId || f.facilityId) : (dto.projectFacilityIds || []),
-    
+
     // Address mapping
     projectAddressText: addressObj ? addressObj.address || "" : "",
     projectAddressTextVi: addressObj ? addressObj.addressVi || "" : "",
     provinceId: addressObj ? addressObj.provinceId : undefined,
     districtId: addressObj ? addressObj.districtId : undefined,
+    projectAddressId: addressObj ? addressObj.id : undefined,
   };
 };
 
@@ -136,6 +161,24 @@ const mapUnitDto = (dto: any): Unit => ({
   unitFacilityIds: dto.unitFacilityMap ? dto.unitFacilityMap.map((f: any) => f.unitFacilityId || f.facilityId) : (dto.unitFacilityIds || []),
 });
 
+// 1. Hook to get individual Project detail
+export function useGetProject(id?: number, options?: { enabled?: boolean }) {
+  const query = useGetApiServicesAppProjectGet({ id }, {
+    query: {
+      enabled: options?.enabled !== false && !!id,
+    }
+  });
+
+  const mappedData = useMemo(() => {
+    return query.data ? mapProjectDto(query.data) : undefined;
+  }, [query.data]);
+
+  return {
+    ...query,
+    data: mappedData,
+  };
+}
+
 // 1. Hook to get Projects
 export function useGetProjects(params: {
   Keyword?: string;
@@ -150,12 +193,16 @@ export function useGetProjects(params: {
     MaxResultCount: params.MaxResultCount,
   });
 
-  return {
-    ...query,
-    data: query.data ? {
+  const mappedData = useMemo(() => {
+    return query.data ? {
       items: ((query.data as any).items || []).map(mapProjectDto),
       totalCount: (query.data as any).totalCount || 0,
-    } : undefined,
+    } : undefined;
+  }, [query.data]);
+
+  return {
+    ...query,
+    data: mappedData,
   };
 }
 
@@ -175,12 +222,16 @@ export function useGetUnits(params: {
     MaxResultCount: params.MaxResultCount,
   });
 
-  return {
-    ...query,
-    data: query.data ? {
+  const mappedData = useMemo(() => {
+    return query.data ? {
       items: ((query.data as any).items || []).map(mapUnitDto),
       totalCount: (query.data as any).totalCount || 0,
-    } : undefined,
+    } : undefined;
+  }, [query.data]);
+
+  return {
+    ...query,
+    data: mappedData,
   };
 }
 
@@ -258,9 +309,8 @@ export function useGetProjectFloors(projectId?: number, options?: { enabled?: bo
     }
   });
 
-  return {
-    ...query,
-    data: query.data ? ((query.data as any) || []).map((dto: any) => ({
+  const mappedData = useMemo(() => {
+    return query.data ? ((query.data as any) || []).map((dto: any) => ({
       id: dto.id || 0,
       floorName: dto.floorName || "",
       size: dto.size || 0,
@@ -268,7 +318,12 @@ export function useGetProjectFloors(projectId?: number, options?: { enabled?: bo
       isActive: dto.isActive !== false,
       projectId: dto.projectId || 0,
       numberOfUnits: dto.numberOfUnits || 0,
-    })) as Floor[] : undefined,
+    })) as Floor[] : undefined;
+  }, [query.data]);
+
+  return {
+    ...query,
+    data: mappedData,
   };
 }
 

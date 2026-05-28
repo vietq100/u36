@@ -204,7 +204,7 @@ export function ContactList() {
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             }}
           >
-            <SelectTrigger className="w-full sm:w-[200px] h-10 bg-card text-foreground border-input">
+            <SelectTrigger className="w-full sm:w-[200px]">
               <SelectValue placeholder="Tất cả doanh nghiệp" />
             </SelectTrigger>
             <SelectContent>
@@ -225,7 +225,7 @@ export function ContactList() {
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             }}
           >
-            <SelectTrigger className="w-full sm:w-[160px] h-10 bg-card text-foreground border-input">
+            <SelectTrigger className="w-full sm:w-[160px]">
               <SelectValue placeholder="Tất cả nguồn khách" />
             </SelectTrigger>
             <SelectContent>
@@ -240,7 +240,7 @@ export function ContactList() {
 
           {/* Reset Filters button */}
           {(keyword || selectedCompanyId !== 0 || selectedLeadSourceId !== 0) && (
-            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground h-10 text-xs">
+            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground text-xs">
               Xóa bộ lọc
             </Button>
           )}

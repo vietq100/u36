@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { LeaseContract } from "../types";
 
@@ -52,12 +53,16 @@ export function useGetContracts(params: {
     MaxResultCount: params.MaxResultCount,
   });
 
-  return {
-    ...query,
-    data: query.data ? {
+  const mappedData = useMemo(() => {
+    return query.data ? {
       items: ((query.data as any).items || []).map(mapLeaseContractDto),
       totalCount: (query.data as any).totalCount || 0,
-    } : undefined,
+    } : undefined;
+  }, [query.data]);
+
+  return {
+    ...query,
+    data: mappedData,
   };
 }
 
@@ -98,7 +103,7 @@ export function useDeleteContract(options?: { onSuccess?: () => void }) {
   const queryClient = useQueryClient();
 
   const mockMutation = useMutation({
-    mutationFn: async (_id: number) => {
+    mutationFn: async () => {
       // backend API lacks a delete agreement endpoint, so we return a placeholder success.
       return {};
     },

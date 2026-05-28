@@ -209,7 +209,7 @@ export function InquiryList({ projectId }: { projectId?: number }) {
                 setPagination((prev) => ({ ...prev, pageIndex: 0 }));
               }}
             >
-              <SelectTrigger className="w-full sm:w-[170px] h-10 bg-card text-foreground border-input">
+              <SelectTrigger className="w-full sm:w-[170px]">
                 <SelectValue placeholder="Tất cả dự án" />
               </SelectTrigger>
               <SelectContent>
@@ -231,7 +231,7 @@ export function InquiryList({ projectId }: { projectId?: number }) {
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             }}
           >
-            <SelectTrigger className="w-full sm:w-[190px] h-10 bg-card text-foreground border-input">
+            <SelectTrigger className="w-full sm:w-[190px]">
               <SelectValue placeholder="Tất cả doanh nghiệp" />
             </SelectTrigger>
             <SelectContent>
@@ -252,7 +252,7 @@ export function InquiryList({ projectId }: { projectId?: number }) {
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             }}
           >
-            <SelectTrigger className="w-full sm:w-[160px] h-10 bg-card text-foreground border-input">
+            <SelectTrigger className="w-full sm:w-[160px]">
               <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent>
@@ -267,7 +267,7 @@ export function InquiryList({ projectId }: { projectId?: number }) {
 
           {/* Reset Filters button */}
           {(keyword || selectedProjectId !== (projectId || 0) || selectedCompanyId !== 0 || selectedStatusId !== 0) && (
-            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground h-10 text-xs hover:bg-accent/10">
+            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground text-xs hover:bg-accent/10">
               Xóa bộ lọc
             </Button>
           )}

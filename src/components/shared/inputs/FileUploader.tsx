@@ -71,7 +71,7 @@ export function FileUploader({
         className={cn(
           "relative flex flex-col items-center justify-center rounded-input border-2 border-dashed border-border bg-input px-6 py-6 text-center cursor-pointer transition-all hover:bg-muted/10 hover:border-ring focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
           isDragActive && "border-primary bg-primary/5",
-          disabled && "opacity-50 cursor-not-allowed pointer-events-none"
+          disabled && "bg-muted opacity-70 cursor-not-allowed pointer-events-none"
         )}
       >
         <input {...getInputProps()} />

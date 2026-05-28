@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import type { Company, Contact } from "../types";
 
@@ -78,12 +79,16 @@ export function useGetCompanies(params: {
     MaxResultCount: params.MaxResultCount,
   });
 
-  return {
-    ...query,
-    data: query.data ? {
+  const mappedData = useMemo(() => {
+    return query.data ? {
       items: ((query.data as any).items || []).map(mapCompanyDto),
       totalCount: (query.data as any).totalCount || 0,
-    } : undefined,
+    } : undefined;
+  }, [query.data]);
+
+  return {
+    ...query,
+    data: mappedData,
   };
 }
 
@@ -102,12 +107,16 @@ export function useGetContacts(params: {
     MaxResultCount: params.MaxResultCount,
   });
 
-  return {
-    ...query,
-    data: query.data ? {
+  const mappedData = useMemo(() => {
+    return query.data ? {
       items: ((query.data as any).items || []).map(mapContactDto),
       totalCount: (query.data as any).totalCount || 0,
-    } : undefined,
+    } : undefined;
+  }, [query.data]);
+
+  return {
+    ...query,
+    data: mappedData,
   };
 }
 

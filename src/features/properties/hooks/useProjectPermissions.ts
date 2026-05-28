@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { 
   useGetApiServicesAppProjectGetListProjectUserPermission,
@@ -76,14 +77,18 @@ export function useGetAssignableUsers(keyword?: string) {
     SkipCount: 0,
   });
 
-  return {
-    ...query,
-    data: query.data
+  const mappedData = useMemo(() => {
+    return query.data
       ? ((query.data as any)?.items || []).map((u: any) => ({
           id: u.id,
           name: u.displayName || `${u.surname || ""} ${u.name || ""}`.trim() || u.userName || `User #${u.id}`,
           email: u.emailAddress || "",
         }))
-      : [],
+      : [];
+  }, [query.data]);
+
+  return {
+    ...query,
+    data: mappedData,
   };
 }

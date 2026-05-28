@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Trash2, Shield, User, Building, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,20 @@ export function AddUserPermissionDialog({ open, onOpenChange, onSuccess }: AddUs
   // Draft table state
   const [drafts, setDrafts] = useState<DraftPermission[]>([]);
 
+  // Track previous open state to reset parameters on transition
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) {
+      setUserKeyword("");
+      setProjectKeyword("");
+      setSelectedUserIds([]);
+      setSelectedProjectIds([]);
+      setDefaultTypeId(2);
+      setDrafts([]);
+    }
+  }
+
   // Fetch projects and assignable users
   const { data: projectsData, isLoading: isProjectsLoading } = useGetProjects({
     SkipCount: 0,
@@ -65,18 +79,6 @@ export function AddUserPermissionDialog({ open, onOpenChange, onSuccess }: AddUs
     p.projectName.toLowerCase().includes(projectKeyword.toLowerCase()) ||
     p.projectCode.toLowerCase().includes(projectKeyword.toLowerCase())
   );
-
-  // Clear states when dialog opens
-  useEffect(() => {
-    if (open) {
-      setUserKeyword("");
-      setProjectKeyword("");
-      setSelectedUserIds([]);
-      setSelectedProjectIds([]);
-      setDefaultTypeId(2);
-      setDrafts([]);
-    }
-  }, [open]);
 
   const handleToggleUser = (userId: number) => {
     setSelectedUserIds((prev) =>

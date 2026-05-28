@@ -100,8 +100,8 @@ export function UnitList({ projectId }: { projectId?: number }) {
         const color = u.statusColor || "#10b981";
         return (
           <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold border"
-            style={{ 
-              borderColor: `${color}30`, 
+            style={{
+              borderColor: `${color}30`,
               backgroundColor: `${color}10`,
               color: color
             }}
@@ -120,9 +120,8 @@ export function UnitList({ projectId }: { projectId?: number }) {
         return (
           <div className="flex items-center gap-2">
             <span
-              className={`h-2 w-2 rounded-full ${
-                isActive ? "bg-emerald-500" : "bg-muted-foreground"
-              }`}
+              className={`h-2 w-2 rounded-full ${isActive ? "bg-emerald-500" : "bg-muted-foreground"
+                }`}
             />
             <span className={`text-xs font-medium ${isActive ? "text-emerald-500" : "text-muted-foreground"}`}>
               {isActive ? "Bật" : "Tắt"}
@@ -153,11 +152,10 @@ export function UnitList({ projectId }: { projectId?: number }) {
             <Button
               variant="ghost"
               size="icon"
-              className={`h-8 w-8 ${
-                unit.isActive 
-                  ? "text-muted-foreground hover:text-destructive" 
+              className={`h-8 w-8 ${unit.isActive
+                  ? "text-muted-foreground hover:text-destructive"
                   : "text-muted-foreground hover:text-emerald-500"
-              }`}
+                }`}
               onClick={() => setConfirmUnit(unit)}
               title={unit.isActive ? "Ngưng hoạt động" : "Kích hoạt"}
             >
@@ -206,7 +204,7 @@ export function UnitList({ projectId }: { projectId?: number }) {
                 setPagination((prev) => ({ ...prev, pageIndex: 0 }));
               }}
             >
-              <SelectTrigger className="w-full sm:w-[180px] h-10 bg-card text-foreground border-input">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Tất cả dự án" />
               </SelectTrigger>
               <SelectContent>
@@ -228,7 +226,7 @@ export function UnitList({ projectId }: { projectId?: number }) {
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             }}
           >
-            <SelectTrigger className="w-full sm:w-[160px] h-10 bg-card text-foreground border-input">
+            <SelectTrigger className="w-full sm:w-[160px]">
               <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent>
@@ -243,7 +241,7 @@ export function UnitList({ projectId }: { projectId?: number }) {
 
           {/* Reset Filters button */}
           {(keyword || selectedProjectId !== (projectId || 0) || selectedStatusId !== 0) && (
-            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground h-10 text-xs">
+            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground text-xs">
               Xóa bộ lọc
             </Button>
           )}
@@ -281,9 +279,8 @@ export function UnitList({ projectId }: { projectId?: number }) {
         open={confirmUnit !== null}
         onOpenChange={(open) => !open && setConfirmUnit(null)}
         title={confirmUnit?.isActive ? "Xác nhận ngưng hoạt động" : "Xác nhận kích hoạt"}
-        description={`Bạn có chắc chắn muốn ${
-          confirmUnit?.isActive ? "ngưng hoạt động" : "kích hoạt hoạt động"
-        } cho căn hộ/mặt bằng "${confirmUnit?.unitName}"?`}
+        description={`Bạn có chắc chắn muốn ${confirmUnit?.isActive ? "ngưng hoạt động" : "kích hoạt hoạt động"
+          } cho căn hộ/mặt bằng "${confirmUnit?.unitName}"?`}
         variant={confirmUnit?.isActive ? "destructive" : "default"}
         confirmText={confirmUnit?.isActive ? "Ngưng hoạt động" : "Kích hoạt"}
         onConfirm={() => {

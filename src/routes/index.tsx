@@ -19,7 +19,7 @@ const withSuspense = (Component: React.ComponentType) => (
   </Suspense>
 );
 
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
     path: "/login",
     element: withSuspense(LoginPage),

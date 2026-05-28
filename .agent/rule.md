@@ -54,6 +54,10 @@ Dự án áp dụng mô hình **Feature-Based Architecture** kết hợp với *
     *   Các mutation/query hooks tự động sinh phải được gọi trực tiếp trong các components/hooks nghiệp vụ.
 *   **Biến đổi Dữ liệu (Transformers)**:
     *   Khi dữ liệu từ API không phù hợp để hiển thị trực tiếp lên UI (hoặc bị lồng nhau phức tạp), hãy viết các hàm map dữ liệu tại thư mục `src/api/transformers/` thay vì xử lý trực tiếp trong component.
+*   **Địa chỉ hành chính (Tỉnh/Thành, Quận/Huyện, Quốc gia)**:
+    *   **TUYỆT ĐỐI KHÔNG** sử dụng các endpoint/hooks từ `@/api/generated/locations/locations` (như `useGetApiServicesAppLocationsGetListProvince`, `useGetApiServicesAppLocationsGetListDistrict`).
+    *   **Bắt buộc** lấy từ `@/api/generated/category/category` (ví dụ: `useGetApiServicesAppCategoryGetListProvince`, `useGetApiServicesAppCategoryGetListDistrict`, `useGetApiServicesAppCategoryGetListCountry`).
+
 
 ---
 

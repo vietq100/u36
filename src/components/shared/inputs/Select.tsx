@@ -33,18 +33,36 @@ function Select({
   open: openProp,
   onOpenChange,
   disabled = false,
+  options: optionsProp,
   ...props
 }: React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Root> & {
   value?: string
   onValueChange?: (val: string) => void
   disabled?: boolean
+  options?: Array<{ value: string; label: string; disabled?: boolean }>
 }) {
   const [openState, setOpenState] = React.useState(false)
   const open = openProp !== undefined ? openProp : openState
   const setOpen = onOpenChange !== undefined ? onOpenChange : setOpenState
 
   const [search, setSearch] = React.useState("")
-  const [options, setOptions] = React.useState<Array<{ value: string; label: string; disabled?: boolean }>>([])
+  
+  const [prevOptionsProp, setPrevOptionsProp] = React.useState(optionsProp)
+  const [options, setOptions] = React.useState<Array<{ value: string; label: string; disabled?: boolean }>>(optionsProp || [])
+
+  const isSameOptions = React.useMemo(() => {
+    if (!optionsProp || !prevOptionsProp) return optionsProp === prevOptionsProp;
+    if (optionsProp.length !== prevOptionsProp.length) return false;
+    return optionsProp.every((opt, i) => {
+      const prev = prevOptionsProp[i];
+      return prev && opt.value === prev.value && opt.label === prev.label && opt.disabled === prev.disabled;
+    });
+  }, [optionsProp, prevOptionsProp]);
+
+  if (!isSameOptions) {
+    setPrevOptionsProp(optionsProp)
+    setOptions(optionsProp || [])
+  }
 
   const registerOption = React.useCallback((value: string, label: string, disabled?: boolean) => {
     setOptions((prev) => {
@@ -68,11 +86,13 @@ function Select({
     })
   }, [])
 
-  React.useEffect(() => {
+  const [prevOpen, setPrevOpen] = React.useState(open)
+  if (open !== prevOpen) {
+    setPrevOpen(open)
     if (!open) {
       setSearch("")
     }
-  }, [open])
+  }
 
   return (
     <SelectContext.Provider
@@ -89,7 +109,7 @@ function Select({
         disabled,
       }}
     >
-      <PopoverPrimitive.Root open={open} onOpenChange={setOpen} {...props}>
+      <PopoverPrimitive.Root open={open} onOpenChange={setOpen} modal={true} {...props}>
         {children}
       </PopoverPrimitive.Root>
     </SelectContext.Provider>
@@ -132,7 +152,7 @@ const SelectTrigger = React.forwardRef<
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex h-8 w-full items-center justify-between gap-1.5 rounded-input border border-border bg-input py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-1 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground transition-all duration-200 text-left",
+        "flex h-8 w-full items-center justify-between gap-1.5 rounded-input border border-border bg-input py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:bg-muted disabled:opacity-70 aria-invalid:border-destructive aria-invalid:ring-1 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground transition-all duration-200 text-left",
         className
       )}
       {...props}
@@ -185,7 +205,7 @@ const SelectContent = React.forwardRef<
         ref={ref}
         data-slot="select-content"
         className={cn(
-          "relative z-50 max-h-60 w-[var(--radix-popover-trigger-width)] min-w-36 overflow-x-hidden overflow-y-auto rounded-popover border border-border/60 bg-popover/80 dark:bg-black/60 backdrop-blur-xl p-1 text-popover-foreground shadow-2xl outline-none duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "relative z-50 max-h-60 w-[var(--radix-popover-trigger-width)] min-w-36 overflow-x-hidden overflow-y-auto rounded-popover border border-border/60 bg-select-popover-bg backdrop-blur-xl p-1 text-popover-foreground shadow-2xl outline-none duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className
         )}
         align="start"
@@ -193,7 +213,7 @@ const SelectContent = React.forwardRef<
         {...props}
       >
         {showSearchInput && (
-          <div className="flex items-center border-b border-border/50 px-2.5 pb-1 mb-1 sticky top-0 bg-popover/95 dark:bg-black/95 backdrop-blur-md z-10 -mx-1 -mt-1 pt-1.5 px-2.5">
+          <div className="flex items-center border-b border-border/50 px-2.5 pb-1 mb-1 sticky top-0 bg-select-popover-bg backdrop-blur-md z-10 -mx-1 -mt-1 pt-1.5 px-2.5">
             <Search className="mr-2 h-3.5 w-3.5 shrink-0 opacity-50 text-muted-foreground" />
             <input
               autoFocus

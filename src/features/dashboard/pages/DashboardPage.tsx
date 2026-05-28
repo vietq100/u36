@@ -10,7 +10,8 @@ import {
   Plus, 
   ArrowUpRight,
   ShieldCheck,
-  Clock
+  Clock,
+  Sparkles
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { usePropertiesStore } from "@/features/properties/stores/usePropertiesStore";
@@ -136,22 +137,42 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header and Welcome */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-border/40">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Hệ thống Phú Mỹ Hưng</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Chào mừng trở lại! Dưới đây là phân tích hoạt động kinh doanh leasing hôm nay.</p>
+      {/* Premium Hero Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-r from-primary/10 via-accent/5 to-primary/5 p-6 md:p-8 shadow-xl backdrop-blur-md"
+      >
+        {/* Glow decorative blobs */}
+        <div className="absolute right-0 top-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-primary/20 blur-[80px] pointer-events-none" />
+        <div className="absolute left-1/3 bottom-0 -mb-20 w-60 h-60 rounded-full bg-accent/15 blur-[60px] pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              <Sparkles className="h-3.5 w-3.5 animate-pulse text-accent" />
+              Hệ thống Quản lý Phú Mỹ Hưng
+            </div>
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-foreground via-foreground/90 to-accent bg-clip-text text-transparent">
+              PMH Leasing Platform
+            </h1>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Chào mừng quay trở lại! Dưới đây là phân tích chi tiết hoạt động kinh doanh, tỷ lệ lấp đầy mặt bằng căn hộ, doanh thu thuê và danh sách khách hàng cần lưu ý hôm nay.
+            </p>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <Button
+              onClick={() => navigate("/contracts")}
+              variant="accent"
+              className="shadow-lg shadow-accent/10 hover:shadow-accent/25 hover:scale-[1.02] active:scale-95 transition-all duration-200"
+            >
+              <Plus className="h-4 w-4" />
+              Lập hợp đồng mới
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button 
-            onClick={() => navigate("/contracts")}
-            size="sm"
-          >
-            <Plus className="h-4 w-4" />
-            Tạo hợp đồng
-          </Button>
-        </div>
-      </div>
+      </motion.div>
 
       {/* Main Metric Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -167,7 +188,7 @@ export default function DashboardPage() {
             >
               <Card
                 onClick={() => navigate(card.link)}
-                className="w-full cursor-pointer p-6 hover:border-primary/20 transition-all duration-300 relative group overflow-hidden flex flex-col justify-between"
+                className="w-full cursor-pointer p-6 hover:border-primary/30 dark:hover:border-primary/40 transition-all duration-300 relative group overflow-hidden flex flex-col justify-between hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 active:scale-[0.98] border-border/60 bg-card/65 backdrop-blur-md"
               >
                 <div className="flex justify-between items-start w-full">
                   <div className="space-y-2 flex-1 min-w-0">
@@ -192,7 +213,7 @@ export default function DashboardPage() {
       {/* Recharts Visualizations Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Trend Chart */}
-        <Card className="lg:col-span-2 p-5 flex flex-col h-[340px]">
+        <Card className="lg:col-span-2 p-5 flex flex-col h-[340px] border-border/60 bg-card/65 backdrop-blur-md hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4.5 w-4.5 text-primary" />
@@ -231,7 +252,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Project Occupancy Rates */}
-        <Card className="p-5 flex flex-col h-[340px]">
+        <Card className="p-5 flex flex-col h-[340px] border-border/60 bg-card/65 backdrop-blur-md hover:shadow-lg transition-all duration-300">
           <div className="flex items-center gap-2 mb-4">
             <Percent className="h-4.5 w-4.5 text-accent" />
             <h3 className="text-sm font-semibold text-foreground">Tỷ lệ lấp đầy theo Dự án</h3>
@@ -264,7 +285,7 @@ export default function DashboardPage() {
       {/* Quick Actions & Recent Info */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Actions */}
-        <Card className="p-5">
+        <Card className="p-5 border-border/60 bg-card/65 backdrop-blur-md hover:shadow-lg transition-all duration-300">
           <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
             <ShieldCheck className="h-4.5 w-4.5 text-primary" />
             Phím tắt tác vụ nhanh
@@ -276,7 +297,7 @@ export default function DashboardPage() {
                 <button
                   key={qa.label}
                   onClick={qa.action}
-                  className={`flex items-center gap-3.5 p-3 rounded-lg border border-border/20 text-left transition-all duration-200 group ${qa.bgColor}`}
+                  className={`flex items-center gap-3.5 p-3 rounded-lg border border-border/20 text-left transition-all duration-200 group ${qa.bgColor} hover:scale-[1.01] hover:-translate-y-0.5 hover:shadow-md`}
                 >
                   <div className="p-2 rounded-md bg-background shadow-sm shrink-0">
                     <Icon className="h-4.5 w-4.5" />
@@ -293,7 +314,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Expiring Leases Overview */}
-        <Card className="lg:col-span-2 p-5 flex flex-col justify-between">
+        <Card className="lg:col-span-2 p-5 flex flex-col justify-between border-border/60 bg-card/65 backdrop-blur-md hover:shadow-lg transition-all duration-300">
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">

@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { useAppStore } from "@/stores/useAppStore";
-import { 
-  Building2, 
-  LayoutDashboard, 
-  Users, 
-  FileText, 
+import {
+  Building2,
+  LayoutDashboard,
+  Users,
+  FileText,
   MessageSquare,
   X
 } from "lucide-react";
@@ -27,7 +27,7 @@ export function Sidebar() {
     <>
       {/* Mobile Backdrop overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
           onClick={() => setSidebarOpen(false)}
         />

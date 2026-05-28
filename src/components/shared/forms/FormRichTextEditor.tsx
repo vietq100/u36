@@ -16,6 +16,7 @@ interface FormRichTextEditorProps<T extends FieldValues> {
   placeholder?: string;
   description?: string;
   disabled?: boolean;
+  required?: boolean;
 }
 
 export function FormRichTextEditor<T extends FieldValues>({
@@ -25,6 +26,7 @@ export function FormRichTextEditor<T extends FieldValues>({
   placeholder,
   description,
   disabled = false,
+  required,
 }: FormRichTextEditorProps<T>) {
   return (
     <FormField
@@ -32,7 +34,7 @@ export function FormRichTextEditor<T extends FieldValues>({
       name={name as any}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel required={required}>{label}</FormLabel>
           <FormControl>
             <RichTextEditor
               value={field.value || ""}

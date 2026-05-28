@@ -169,7 +169,7 @@ export function TenantList() {
             />
           </form>
           {keyword && (
-            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground h-10 text-xs">
+            <Button variant="ghost" onClick={clearFilters} className="text-muted-foreground text-xs">
               Xóa tìm kiếm
             </Button>
           )}

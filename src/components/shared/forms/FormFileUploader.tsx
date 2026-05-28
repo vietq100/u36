@@ -18,6 +18,7 @@ interface FormFileUploaderProps<T extends FieldValues> {
   placeholder?: string;
   description?: string;
   disabled?: boolean;
+  required?: boolean;
 }
 
 export function FormFileUploader<T extends FieldValues>({
@@ -29,6 +30,7 @@ export function FormFileUploader<T extends FieldValues>({
   placeholder,
   description,
   disabled = false,
+  required,
 }: FormFileUploaderProps<T>) {
   return (
     <FormField
@@ -36,7 +38,7 @@ export function FormFileUploader<T extends FieldValues>({
       name={name as any}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel required={required}>{label}</FormLabel>
           <FormControl>
             <FileUploader
               value={field.value}

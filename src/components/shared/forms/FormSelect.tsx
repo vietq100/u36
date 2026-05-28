@@ -1,11 +1,12 @@
+import * as React from "react";
 import type { Control, FieldValues, Path } from "react-hook-form";
 import {
-  FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  useFormField,
 } from "@/components/ui/form";
 import {
   Select,
@@ -32,6 +33,32 @@ interface FormSelectProps<T extends FieldValues> {
   onChange?: (value: any) => void;
   searchPlaceholder?: string;
   emptyMessage?: string;
+  required?: boolean;
+}
+
+interface FormSelectTriggerProps {
+  placeholder?: string;
+  className?: string;
+  disabled?: boolean;
+}
+
+function FormSelectTrigger({ placeholder, className, disabled }: FormSelectTriggerProps) {
+  const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
+  return (
+    <SelectTrigger
+      id={formItemId}
+      aria-describedby={
+        !error
+          ? `${formDescriptionId}`
+          : `${formDescriptionId} ${formMessageId}`
+      }
+      aria-invalid={!!error}
+      className={className}
+      disabled={disabled}
+    >
+      <SelectValue placeholder={placeholder} />
+    </SelectTrigger>
+  );
 }
 
 export function FormSelect<T extends FieldValues>({
@@ -46,6 +73,7 @@ export function FormSelect<T extends FieldValues>({
   onChange,
   searchPlaceholder,
   emptyMessage,
+  required,
 }: FormSelectProps<T>) {
   return (
     <FormField
@@ -58,9 +86,13 @@ export function FormSelect<T extends FieldValues>({
           options.some(opt => typeof opt.value === "number");
         const valStr = field.value !== undefined && field.value !== null ? String(field.value) : "";
 
+        const mappedOptions = React.useMemo(() => {
+          return options.map((opt) => ({ value: String(opt.value), label: String(opt.label) }));
+        }, [options]);
+
         return (
           <FormItem>
-            <FormLabel>{label}</FormLabel>
+            <FormLabel required={required}>{label}</FormLabel>
             <Select
               disabled={disabled}
               onValueChange={(val) => {
@@ -77,12 +109,13 @@ export function FormSelect<T extends FieldValues>({
                 onChange?.(parsedVal);
               }}
               value={valStr}
+              options={mappedOptions}
             >
-              <FormControl>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder={placeholder} />
-                </SelectTrigger>
-              </FormControl>
+              <FormSelectTrigger
+                placeholder={placeholder}
+                className="w-full"
+                disabled={disabled}
+              />
               <SelectContent searchPlaceholder={searchPlaceholder} emptyMessage={emptyMessage}>
                 {options.map((opt) => (
                   <SelectItem key={opt.value} value={String(opt.value)}>
