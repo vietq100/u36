@@ -25,6 +25,7 @@ const initialStatuses: InquiryStatusOption[] = [
 const initialInquiries: Inquiry[] = [
   {
     id: 1,
+    inquiryName: "Yêu cầu thuê Scenic Valley 1 - Trần Thị Mai",
     contactId: 103,
     contactName: "Trần Thị Mai",
     companyId: null,
@@ -42,6 +43,7 @@ const initialInquiries: Inquiry[] = [
   },
   {
     id: 2,
+    inquiryName: "Thuê shophouse Midtown M7 làm NH - Nguyễn Văn Nam",
     contactId: 101,
     contactName: "Nguyễn Văn Nam",
     companyId: 1,

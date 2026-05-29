@@ -6,6 +6,7 @@ import { UserCheck, Building, BarChart2, PieChart as PieIcon } from "lucide-reac
 import { useClientsStore } from "../stores/useClientsStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   ResponsiveContainer,
   BarChart,
@@ -133,59 +134,35 @@ export default function ClientsPage() {
       </motion.div>
 
       {/* Modern Premium Tabs Header */}
-      <div className="flex border-b border-border/40 gap-6">
-        <button
-          onClick={() => setActiveTab("contacts")}
-          className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all relative ${
-            activeTab === "contacts"
-              ? "text-primary font-bold"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <UserCheck className="h-4 w-4" />
-          Liên hệ & Khách cá nhân
-          {activeTab === "contacts" && (
-            <motion.span
-              layoutId="activeTabIndicator"
-              className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full"
-              transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            />
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab("companies")}
-          className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all relative ${
-            activeTab === "companies"
-              ? "text-primary font-bold"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <Building className="h-4 w-4" />
-          Khách hàng doanh nghiệp
-          {activeTab === "companies" && (
-            <motion.span
-              layoutId="activeTabIndicator"
-              className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded-full"
-              transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            />
-          )}
-        </button>
-      </div>
+      <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as "contacts" | "companies")} className="w-full">
+        <TabsList variant="underline">
+          <TabsTrigger value="contacts" layoutId="activeTabIndicator">
+            <UserCheck className="h-4 w-4" />
+            <span>Liên hệ & Khách cá nhân</span>
+          </TabsTrigger>
+          <TabsTrigger value="companies" layoutId="activeTabIndicator">
+            <Building className="h-4 w-4" />
+            <span>Khách hàng doanh nghiệp</span>
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Tab Panels with AnimatePresence slide effect */}
-      <div className="mt-2 overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, x: activeTab === "contacts" ? -15 : 15 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: activeTab === "contacts" ? 15 : -15 }}
-            transition={{ duration: 0.2 }}
-          >
-            {activeTab === "contacts" ? <ContactList /> : <CompanyList />}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+        {/* Tab Panels with AnimatePresence slide effect */}
+        <div className="mt-2 overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, x: activeTab === "contacts" ? -15 : 15 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: activeTab === "contacts" ? 15 : -15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <TabsContent value={activeTab} className="mt-0 focus:outline-none">
+                {activeTab === "contacts" ? <ContactList /> : <CompanyList />}
+              </TabsContent>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </Tabs>
     </div>
   );
 }

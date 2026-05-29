@@ -10,6 +10,7 @@ import { FormInput } from "@/components/shared/forms/FormInput";
 import { FormSelect } from "@/components/shared/forms/FormSelect";
 import { FormDatePicker } from "@/components/shared/forms/FormDatePicker";
 import { FormTextarea } from "@/components/shared/forms/FormTextarea";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectTrigger,
@@ -426,7 +427,7 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess, initialTab
   };
 
   const projectTabs = project && (
-    <div className="flex flex-wrap items-center gap-1.5 p-1 bg-muted/40 dark:bg-black/20 rounded-xl border border-border/10 max-w-full overflow-x-auto no-scrollbar mt-3">
+    <TabsList variant="pills" className="mt-3">
       {[
         { id: "summary", label: "Tổng quan", icon: Building },
         { id: "floors", label: "Sơ đồ tầng", icon: Layers },
@@ -439,25 +440,22 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess, initialTab
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
         return (
-          <button
+          <TabsTrigger
             type="button"
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as TabType)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 ${isActive
-              ? "bg-background text-primary shadow-sm border border-border/20 font-bold"
-              : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
-              }`}
+            value={tab.id}
           >
             <Icon className={`h-3.5 w-3.5 ${isActive ? "text-primary animate-pulse" : "text-muted-foreground"}`} />
             <span>{tab.label}</span>
-          </button>
+          </TabsTrigger>
         );
       })}
-    </div>
+    </TabsList>
   );
 
   return (
-    <DetailSheet
+    <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as TabType)} className="w-full">
+      <DetailSheet
       open={open}
       onOpenChange={onOpenChange}
       title={project ? `${project.projectName}` : "Thêm mới Dự án"}
@@ -878,5 +876,6 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess, initialTab
         project && <TabProjectUserPermission projectId={project.id} />
       ) : null}
     </DetailSheet>
+    </Tabs>
   );
 }
