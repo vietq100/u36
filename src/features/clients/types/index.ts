@@ -33,6 +33,7 @@ export type ContactFormValues = z.infer<typeof contactSchema>;
 // Frontend Company Interface
 export interface Company {
   id: number;
+  uniqueId?: string;
   companyName: string;
   vatCode: string;
   email?: string;
@@ -50,6 +51,7 @@ export interface Company {
 // Frontend Contact Interface
 export interface Contact {
   id: number;
+  uniqueId?: string;
   contactName: string;
   companyId?: number;
   companyName?: string;

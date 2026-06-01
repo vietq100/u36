@@ -17,6 +17,7 @@ export type ContractFormValues = z.infer<typeof contractSchema>;
 
 export interface LeaseContract {
   id: number;
+  uniqueId?: string;
   referenceNumber: string;
   companyId?: number | null;
   companyName?: string | null;

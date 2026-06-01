@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -7,10 +7,11 @@ import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
 import { FormSelect } from "@/components/shared/forms/FormSelect";
 import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor";
-import { useCreateOrUpdateCompany } from "../hooks/useClients";
+import { useCreateOrUpdateCompany, useUploadCompanyDocument } from "../hooks/useClients";
+import { useGetDocuments } from "@/features/properties/hooks/useProjectDocuments";
 import { useClientsStore } from "../stores/useClientsStore";
-import { companySchema } from "../types";
 import type { Company, CompanyFormValues } from "../types";
+import { companySchema } from "../types";
 import { FileUploader } from "@/components/shared/inputs/FileUploader";
 interface CompanyFormProps {
   open: boolean;
@@ -22,6 +23,11 @@ interface CompanyFormProps {
 export function CompanyForm({ open, onOpenChange, company, onSuccess }: CompanyFormProps) {
   const industries = useClientsStore((state) => state.industries);
   const nationalities = useClientsStore((state) => state.nationalities);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  // Fetch existing documents if company exists
+  const { data: docData } = useGetDocuments({ inputId: company?.uniqueId });
+  const existingFileUrl = docData && (docData as any).items?.[0]?.fileUrl || null;
 
   const form = useForm<CompanyFormValues>({
     resolver: zodResolver(companySchema) as any,
@@ -39,6 +45,7 @@ export function CompanyForm({ open, onOpenChange, company, onSuccess }: CompanyF
   });
 
   useEffect(() => {
+    setSelectedFile(null);
     if (company) {
       form.reset({
         companyName: company.companyName,
@@ -66,19 +73,36 @@ export function CompanyForm({ open, onOpenChange, company, onSuccess }: CompanyF
     }
   }, [company, open, form, industries, nationalities]);
 
-  const mutation = useCreateOrUpdateCompany({
-    onSuccess: () => {
+  const mutation = useCreateOrUpdateCompany();
+  const uploadMutation = useUploadCompanyDocument();
+
+  const onSubmit = async (values: CompanyFormValues) => {
+    try {
+      const result = await mutation.mutateAsync({
+        id: company?.id,
+        data: values,
+      });
+
+      const uniqueId = (result as any)?.uniqueId;
+
+      if (selectedFile && uniqueId) {
+        toast.info("Đang tải lên tài liệu đính kèm...");
+        await uploadMutation.mutateAsync({
+          params: {
+            UniqueId: uniqueId,
+            DocumentName: selectedFile.name,
+            UploadDate: new Date().toISOString(),
+          },
+          file: selectedFile,
+        });
+      }
+
       toast.success(company ? "Cập nhật doanh nghiệp thành công" : "Thêm mới doanh nghiệp thành công");
       onSuccess?.();
       onOpenChange(false);
-    },
-  });
-
-  const onSubmit = (values: CompanyFormValues) => {
-    mutation.mutate({
-      id: company?.id,
-      data: values,
-    });
+    } catch (error: any) {
+      toast.error("Có lỗi xảy ra: " + (error?.message || error));
+    }
   };
 
   return (
@@ -88,7 +112,7 @@ export function CompanyForm({ open, onOpenChange, company, onSuccess }: CompanyF
       title={company ? "Chỉnh sửa doanh nghiệp" : "Thêm mới doanh nghiệp"}
       description="Nhập thông tin chi tiết doanh nghiệp đối tác hoặc khách thuê. Bấm Lưu khi hoàn tất."
       formId="company-form"
-      isPending={mutation.isPending}
+      isPending={mutation.isPending || uploadMutation.isPending}
     >
       <Form {...form}>
         <form id="company-form" onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
@@ -186,12 +210,11 @@ export function CompanyForm({ open, onOpenChange, company, onSuccess }: CompanyF
               <FormControl>
                 <FileUploader
                   placeholder="Kéo thả tài liệu PDF, hình ảnh Giấy phép KD tại đây (Tối đa 5MB)"
+                  value={selectedFile || existingFileUrl}
                   onChange={(file) => {
-                    if (file) {
-                      toast.info(`Đã nhận tệp tài liệu: ${file.name}`);
-                    }
+                    setSelectedFile(file);
                   }}
-                  disabled={mutation.isPending}
+                  disabled={mutation.isPending || uploadMutation.isPending}
                 />
               </FormControl>
             </FormItem>

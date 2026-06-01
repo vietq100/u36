@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { LeaseContract } from "../types";
+import { customInstance } from "@/api/client/axiosInstance";
 
 // Import Orval generated hooks
 import {
@@ -13,6 +14,7 @@ const mapLeaseContractDto = (dto: any): LeaseContract => {
   const firstUnit = dto.leaseAgreementUnit && dto.leaseAgreementUnit.length > 0 ? dto.leaseAgreementUnit[0] : null;
   return {
     id: dto.id || 0,
+    uniqueId: dto.uniqueId || "",
     referenceNumber: dto.referenceNumber || "",
     companyId: dto.companyId || null,
     companyName: dto.company?.companyName || null,
@@ -114,4 +116,46 @@ export function useDeleteContract(options?: { onSuccess?: () => void }) {
   });
 
   return mockMutation as any;
+}
+
+// 5. Upload mutation for Contract documents
+export function useUploadContractDocument(options?: { onSuccess?: () => void }) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      params: {
+        UniqueId: string;
+        DocumentName?: string;
+        DocumentTypeId?: number;
+        UploadDate?: string;
+      };
+      file: File;
+    }) => {
+      const formData = new FormData();
+      formData.append("file", payload.file);
+
+      const queryParams = new URLSearchParams();
+      Object.entries(payload.params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, String(value));
+        }
+      });
+
+      const response = await customInstance.post(
+        `/api/Documents/UploadContracts?${queryParams.toString()}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/services/app/Documents/GetDocuments"] });
+      options?.onSuccess?.();
+    },
+  });
 }

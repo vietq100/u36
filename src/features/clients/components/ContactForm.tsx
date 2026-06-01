@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -6,7 +6,8 @@ import { Form, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { FormInput } from "@/components/shared/forms/FormInput";
 import { FormSelect } from "@/components/shared/forms/FormSelect";
 import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor";
-import { useCreateOrUpdateContact } from "../hooks/useClients";
+import { useCreateOrUpdateContact, useUploadContactDocument } from "../hooks/useClients";
+import { useGetDocuments } from "@/features/properties/hooks/useProjectDocuments";
 import { useClientsStore } from "../stores/useClientsStore";
 import { contactSchema } from "../types";
 import type { Contact, ContactFormValues } from "../types";
@@ -25,6 +26,11 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
   const nationalities = useClientsStore((state) => state.nationalities);
   const leadSources = useClientsStore((state) => state.leadSources);
   const levels = useClientsStore((state) => state.levels);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  // Fetch existing documents if contact exists
+  const { data: docData } = useGetDocuments({ inputId: contact?.uniqueId });
+  const existingFileUrl = docData && (docData as any).items?.[0]?.fileUrl || null;
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema) as any,
@@ -42,6 +48,7 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
   });
 
   useEffect(() => {
+    setSelectedFile(null);
     if (contact) {
       form.reset({
         contactName: contact.contactName,
@@ -69,19 +76,36 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
     }
   }, [contact, open, form, nationalities, leadSources, levels]);
 
-  const mutation = useCreateOrUpdateContact({
-    onSuccess: () => {
+  const mutation = useCreateOrUpdateContact();
+  const uploadMutation = useUploadContactDocument();
+
+  const onSubmit = async (values: ContactFormValues) => {
+    try {
+      const result = await mutation.mutateAsync({
+        id: contact?.id,
+        data: values,
+      });
+
+      const uniqueId = (result as any)?.uniqueId;
+
+      if (selectedFile && uniqueId) {
+        toast.info("Đang tải lên ảnh đại diện / tài liệu...");
+        await uploadMutation.mutateAsync({
+          params: {
+            UniqueId: uniqueId,
+            DocumentName: selectedFile.name,
+            UploadDate: new Date().toISOString(),
+          },
+          file: selectedFile,
+        });
+      }
+
       toast.success(contact ? "Cập nhật liên hệ thành công" : "Thêm mới liên hệ thành công");
       onSuccess?.();
       onOpenChange(false);
-    },
-  });
-
-  const onSubmit = (values: ContactFormValues) => {
-    mutation.mutate({
-      id: contact?.id,
-      data: values,
-    });
+    } catch (error: any) {
+      toast.error("Có lỗi xảy ra: " + (error?.message || error));
+    }
   };
 
   return (
@@ -91,7 +115,7 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
       title={contact ? "Chỉnh sửa khách hàng / liên hệ" : "Thêm mới khách hàng / liên hệ"}
       description="Nhập thông tin chi tiết liên hệ cá nhân hoặc người đại diện doanh nghiệp. Bấm Lưu khi hoàn tất."
       formId="contact-form"
-      isPending={mutation.isPending}
+      isPending={mutation.isPending || uploadMutation.isPending}
     >
       <Form {...form}>
         <form id="contact-form" onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4 py-2">
@@ -206,13 +230,12 @@ export function ContactForm({ open, onOpenChange, contact, onSuccess }: ContactF
               <FormControl>
                 <FileUploader
                   placeholder="Kéo thả ảnh chân dung hoặc CMND/CCCD tại đây (Tối đa 5MB)"
-                  accept={{ "image/*": [".jpeg", ".png", ".jpg"] }}
+                  accept={{ "image/*": [".jpeg", ".png", ".jpg"], "application/pdf": [".pdf"] }}
+                  value={selectedFile || existingFileUrl}
                   onChange={(file) => {
-                    if (file) {
-                      toast.info(`Đã nhận ảnh: ${file.name}`);
-                    }
+                    setSelectedFile(file);
                   }}
-                  disabled={mutation.isPending}
+                  disabled={mutation.isPending || uploadMutation.isPending}
                 />
               </FormControl>
             </FormItem>

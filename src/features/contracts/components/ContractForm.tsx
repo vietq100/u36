@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -10,7 +10,8 @@ import { FormRichTextEditor } from "@/components/shared/forms/FormRichTextEditor
 import { FormDatePicker } from "@/components/shared/forms/FormDatePicker";
 import { FileUploader } from "@/components/shared/inputs/FileUploader";
 
-import { useCreateOrUpdateContract } from "../hooks/useContracts";
+import { useCreateOrUpdateContract, useUploadContractDocument } from "../hooks/useContracts";
+import { useGetDocuments } from "@/features/properties/hooks/useProjectDocuments";
 import { useContractsStore } from "../stores/useContractsStore";
 import { usePropertiesStore } from "@/features/properties/stores/usePropertiesStore";
 import { useClientsStore } from "@/features/clients/stores/useClientsStore";
@@ -71,8 +72,15 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess, defaultP
     label: `${c.contactName} (${c.phone})`
   }));
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  // Fetch existing documents if contract exists
+  const { data: docData } = useGetDocuments({ inputId: contract?.uniqueId });
+  const existingFileUrl = docData && (docData as any).items?.[0]?.fileUrl || null;
+
   // Reset/populate form when contract changes
   useEffect(() => {
+    setSelectedFile(null);
     if (contract) {
       form.reset({
         referenceNumber: contract.referenceNumber,
@@ -104,19 +112,36 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess, defaultP
     }
   }, [contract, open, form, contacts, units]);
 
-  const mutation = useCreateOrUpdateContract({
-    onSuccess: () => {
+  const mutation = useCreateOrUpdateContract();
+  const uploadMutation = useUploadContractDocument();
+
+  const onSubmit = async (values: ContractFormValues) => {
+    try {
+      const result = await mutation.mutateAsync({
+        id: contract?.id,
+        data: values,
+      });
+
+      const uniqueId = (result as any)?.uniqueId;
+
+      if (selectedFile && uniqueId) {
+        toast.info("Đang tải lên bản scan hợp đồng...");
+        await uploadMutation.mutateAsync({
+          params: {
+            UniqueId: uniqueId,
+            DocumentName: selectedFile.name,
+            UploadDate: new Date().toISOString(),
+          },
+          file: selectedFile,
+        });
+      }
+
       toast.success(contract ? "Cập nhật hợp đồng thành công!" : "Tạo hợp đồng thuê thành công!");
       onSuccess?.();
       onOpenChange(false);
-    },
-  });
-
-  const onSubmit = (values: ContractFormValues) => {
-    mutation.mutate({
-      id: contract?.id,
-      data: values,
-    });
+    } catch (error: any) {
+      toast.error("Có lỗi xảy ra: " + (error?.message || error));
+    }
   };
 
   // Autocomplete price when unit is selected
@@ -140,7 +165,7 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess, defaultP
       title={contract ? "Chỉnh sửa hợp đồng thuê" : "Tạo mới hợp đồng thuê"}
       description="Khai báo các điều khoản thuê bất động sản, bên thuê và tài liệu đính kèm. Bấm Lưu khi hoàn tất."
       formId="contract-form"
-      isPending={mutation.isPending}
+      isPending={mutation.isPending || uploadMutation.isPending}
       saveLabel={contract ? "Lưu thay đổi" : "Ký Hợp đồng"}
     >
       <Form {...form}>
@@ -249,18 +274,16 @@ export function ContractForm({ open, onOpenChange, contract, onSuccess, defaultP
               disabled={mutation.isPending}
             />
 
-            {/* Attachment scan */}
             <FormItem>
               <FormLabel>File đính kèm / Bản chụp Hợp đồng scan (Tùy chọn)</FormLabel>
               <FormControl>
                 <FileUploader
                   placeholder="Kéo thả file PDF bản scan hợp đồng tại đây (Tối đa 10MB)"
+                  value={selectedFile || existingFileUrl}
                   onChange={(file) => {
-                    if (file) {
-                      toast.info(`Đã nhận file scan hợp đồng: ${file.name}`);
-                    }
+                    setSelectedFile(file);
                   }}
-                  disabled={mutation.isPending}
+                  disabled={mutation.isPending || uploadMutation.isPending}
                 />
               </FormControl>
             </FormItem>

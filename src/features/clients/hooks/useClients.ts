@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import type { Company, Contact } from "../types";
+import { customInstance } from "@/api/client/axiosInstance";
 
 import {
   useGetApiServicesAppCompanyGetAll,
@@ -26,6 +27,7 @@ const mapCompanyDto = (dto: any): Company => {
 
   return {
     id: dto.id || 0,
+    uniqueId: dto.uniqueId || "",
     companyName: dto.legalName || dto.businessName || "Doanh nghiệp không tên",
     industryId: dto.industryId || undefined,
     industryName: dto.industry?.name || "",
@@ -48,6 +50,7 @@ const mapContactDto = (dto: any): Contact => {
 
   return {
     id: dto.id || 0,
+    uniqueId: dto.uniqueId || "",
     companyId: dto.companyId || 0,
     companyName: dto.company?.legalName || dto.company?.businessName || "",
     contactName: dto.name || "",
@@ -182,4 +185,88 @@ export function useToggleContactActive(options?: { onSuccess?: () => void }) {
   });
 
   return realMutation as any;
+}
+
+// 7. Upload mutation for Company documents
+export function useUploadCompanyDocument(options?: { onSuccess?: () => void }) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      params: {
+        UniqueId: string;
+        DocumentName?: string;
+        DocumentTypeId?: number;
+        UploadDate?: string;
+      };
+      file: File;
+    }) => {
+      const formData = new FormData();
+      formData.append("file", payload.file);
+
+      const queryParams = new URLSearchParams();
+      Object.entries(payload.params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, String(value));
+        }
+      });
+
+      const response = await customInstance.post(
+        `/api/Documents/UploadCompanies?${queryParams.toString()}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/services/app/Documents/GetDocuments"] });
+      options?.onSuccess?.();
+    },
+  });
+}
+
+// 8. Upload mutation for Contact documents
+export function useUploadContactDocument(options?: { onSuccess?: () => void }) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      params: {
+        UniqueId: string;
+        DocumentName?: string;
+        DocumentTypeId?: number;
+        UploadDate?: string;
+      };
+      file: File;
+    }) => {
+      const formData = new FormData();
+      formData.append("file", payload.file);
+
+      const queryParams = new URLSearchParams();
+      Object.entries(payload.params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryParams.append(key, String(value));
+        }
+      });
+
+      const response = await customInstance.post(
+        `/api/Documents/UploadContacts?${queryParams.toString()}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/services/app/Documents/GetDocuments"] });
+      options?.onSuccess?.();
+    },
+  });
 }
